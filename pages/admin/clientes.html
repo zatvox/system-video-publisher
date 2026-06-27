@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Administración</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Principal</span>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="validaciones.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Validaciones
+          <span class="nav-badge" data-badge="validaciones" style="display:none">0</span>
+        </a>
+        <span class="sidebar-section-label">Gestión</span>
+        <a href="clientes.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Clientes
+        </a>
+        <a href="planes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Planes y precios
+        </a>
+        <a href="pantallas.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pantallas TV
+        </a>
+        <a href="reportes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+          Reportes
+        </a>
+        <span class="sidebar-section-label">Links</span>
+        <a href="../../tv.html" target="_blank" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Ver carrusel TV
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrador</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Clientes</h1>
+          <div class="breadcrumb-path">Admin › Clientes</div>
+        </div>
+        <div class="header-actions">
+          <div style="display:flex;gap:var(--space-3);align-items:center">
+            <input type="search" class="form-control" id="buscar-cliente"
+                   placeholder="Buscar por nombre o email..." style="width:260px">
+            <select class="form-control" id="filtro-estado" style="width:140px">
+              <option value="">Todos</option>
+              <option value="activo">Activos</option>
+              <option value="suspendido">Suspendidos</option>
+              <option value="eliminado">Eliminados</option>
+            </select>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>Lista de clientes</h3>
+            <span class="badge badge-gray" id="total-clientes">—</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Teléfono</th>
+                  <th>Registro</th>
+                  <th>Contrataciones activas</th>
+                  <th>Total pagado</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-clientes">
+                <tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-muted)">
+                  <div class="spinner" style="margin:0 auto 12px"></div>Cargando clientes...
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="paginacion-clientes" style="padding:var(--space-4)"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL DETALLE CLIENTE -->
+  <div id="modal-cliente" class="modal-backdrop" style="display:none">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-cliente-titulo">Detalle del cliente</h3>
+        <button class="modal-close" id="btn-cerrar-modal-cliente" aria-label="Cerrar">×</button>
+      </div>
+      <div class="modal-body" id="modal-cliente-body">
+        <div style="text-align:center;padding:40px;color:var(--text-muted)">
+          <div class="spinner" style="margin:0 auto 12px"></div>Cargando...
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btn-cerrar-modal-cliente-2">Cerrar</button>
+        <button class="btn btn-danger btn-sm" id="btn-bloquear-cliente" style="display:none">🚫 Suspender cuenta</button>
+        <button class="btn btn-success btn-sm" id="btn-activar-cliente" style="display:none">✅ Activar cuenta</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel } from '../../assets/js/main.js';
+    import { listarClientes } from '../../assets/js/supabase-data.js';
+    import { supabase } from '../../assets/js/supabase-client.js';
+    import { badgeEstado, formatearSoles, formatearFecha, escapeHtml, renderPaginacion, debounce, toast } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('admin');
+    if (!perfil) throw new Error('No auth');
+    initPanel(perfil);
+
+    let paginaActual = 1;
+    let filtroEstado = '';
+    let busqueda = '';
+    let clienteSeleccionado = null;
+
+    async function cargarClientes(page = 1) {
+      paginaActual = page;
+      const tbody = document.getElementById('tbody-clientes');
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto 12px"></div></td></tr>';
+
+      const { data, count } = await listarClientes({ page, search: busqueda, estado: filtroEstado });
+      document.getElementById('total-clientes').textContent = `${count || 0} clientes`;
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:60px;color:var(--text-muted)">No hay clientes que coincidan con los filtros.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(c => `
+        <tr>
+          <td>
+            <div style="font-weight:600">${escapeHtml(c.nombre || '—')}</div>
+            <div style="font-size:var(--text-xs);color:var(--text-muted)">${escapeHtml(c.email || '')}</div>
+          </td>
+          <td style="font-size:var(--text-sm)">${escapeHtml(c.telefono || '—')}</td>
+          <td style="font-size:var(--text-sm)">${formatearFecha(c.created_at)}</td>
+          <td style="text-align:center">
+            <span class="badge ${(c.contrataciones_activas || 0) > 0 ? 'badge-success' : 'badge-gray'}">
+              ${c.contrataciones_activas || 0}
+            </span>
+          </td>
+          <td style="font-weight:600;color:var(--color-primary)">
+            ${formatearSoles(c.total_pagado || 0)}
+          </td>
+          <td>${badgeEstado(c.estado)}</td>
+          <td>
+            <button class="btn btn-sm btn-ghost" onclick="verCliente('${c.id}', '${escapeHtml(c.nombre || '')}')">
+              Ver detalle
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      const totalPag = Math.ceil((count || 0) / 20);
+      const paginacion = document.getElementById('paginacion-clientes');
+      const nav = renderPaginacion(paginaActual, totalPag, cargarClientes);
+      paginacion.innerHTML = '';
+      if (nav) paginacion.appendChild(nav);
+    }
+
+    // Búsqueda con debounce
+    document.getElementById('buscar-cliente').addEventListener('input', debounce(e => {
+      busqueda = e.target.value.trim();
+      cargarClientes(1);
+    }, 400));
+
+    document.getElementById('filtro-estado').addEventListener('change', e => {
+      filtroEstado = e.target.value;
+      cargarClientes(1);
+    });
+
+    // Modal cliente
+    window.verCliente = async (id, nombre) => {
+      clienteSeleccionado = id;
+      document.getElementById('modal-cliente-titulo').textContent = nombre;
+      document.getElementById('modal-cliente').style.display = 'flex';
+
+      const body = document.getElementById('modal-cliente-body');
+      body.innerHTML = '<div style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto 12px"></div></div>';
+
+      // Cargar contrataciones del cliente
+      const { data: contrataciones } = await supabase
+        .from('contrataciones')
+        .select('*, planes(nombre, tipo)')
+        .eq('cliente_id', id)
+        .order('created_at', { ascending: false });
+
+      // Cargar recargas del cliente
+      const { data: recargas } = await supabase
+        .from('recargas')
+        .select('*, planes(nombre)')
+        .eq('cliente_id', id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      // Cargar datos del cliente
+      const { data: cliente } = await supabase
+        .from('usuarios')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (cliente) {
+        const btnBloquear = document.getElementById('btn-bloquear-cliente');
+        const btnActivar = document.getElementById('btn-activar-cliente');
+        btnBloquear.style.display = cliente.estado === 'activo' ? 'flex' : 'none';
+        btnActivar.style.display = cliente.estado !== 'activo' ? 'flex' : 'none';
+        btnBloquear.dataset.clienteId = id;
+        btnActivar.dataset.clienteId = id;
+      }
+
+      const contraHtml = (contrataciones || []).length > 0
+        ? `<table class="table" style="font-size:var(--text-sm)">
+            <thead><tr><th>Plan</th><th>Inicio</th><th>Fin</th><th>Estado</th></tr></thead>
+            <tbody>
+              ${(contrataciones || []).map(c => `
+                <tr>
+                  <td>${escapeHtml(c.planes?.nombre || '—')} <small style="color:var(--text-muted)">(${c.planes?.tipo || ''})</small></td>
+                  <td>${formatearFecha(c.fecha_inicio)}</td>
+                  <td>${formatearFecha(c.fecha_fin)}</td>
+                  <td>${badgeEstado(c.estado)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+           </table>`
+        : '<p style="color:var(--text-muted)">Sin contrataciones.</p>';
+
+      const recargasHtml = (recargas || []).length > 0
+        ? `<table class="table" style="font-size:var(--text-sm)">
+            <thead><tr><th>Plan</th><th>Monto</th><th>N° Op.</th><th>Estado</th></tr></thead>
+            <tbody>
+              ${(recargas || []).map(r => `
+                <tr>
+                  <td>${escapeHtml(r.planes?.nombre || '—')}</td>
+                  <td>${formatearSoles(r.monto_declarado)}</td>
+                  <td><code>${escapeHtml(r.numero_operacion)}</code></td>
+                  <td>${badgeEstado(r.estado)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+           </table>`
+        : '<p style="color:var(--text-muted)">Sin pagos registrados.</p>';
+
+      body.innerHTML = `
+        <div style="margin-bottom:var(--space-5)">
+          <h4 style="margin-bottom:var(--space-3);color:var(--text-primary)">Contrataciones (${(contrataciones || []).length})</h4>
+          ${contraHtml}
+        </div>
+        <div>
+          <h4 style="margin-bottom:var(--space-3);color:var(--text-primary)">Últimas 5 solicitudes de pago</h4>
+          ${recargasHtml}
+        </div>
+      `;
+    };
+
+    // Bloquear/activar cliente
+    document.getElementById('btn-bloquear-cliente').addEventListener('click', async () => {
+      if (!clienteSeleccionado) return;
+      const { error } = await supabase.from('usuarios').update({ estado: 'suspendido' }).eq('id', clienteSeleccionado);
+      if (error) { toast.error('Error al bloquear'); return; }
+      toast.warning('Cuenta bloqueada');
+      document.getElementById('modal-cliente').style.display = 'none';
+      cargarClientes(paginaActual);
+    });
+
+    document.getElementById('btn-activar-cliente').addEventListener('click', async () => {
+      if (!clienteSeleccionado) return;
+      const { error } = await supabase.from('usuarios').update({ estado: 'activo' }).eq('id', clienteSeleccionado);
+      if (error) { toast.error('Error al activar'); return; }
+      toast.success('Cuenta activada');
+      document.getElementById('modal-cliente').style.display = 'none';
+      cargarClientes(paginaActual);
+    });
+
+    // Cerrar modales
+    ['btn-cerrar-modal-cliente', 'btn-cerrar-modal-cliente-2'].forEach(id => {
+      document.getElementById(id).addEventListener('click', () => {
+        document.getElementById('modal-cliente').style.display = 'none';
+      });
+    });
+
+    cargarClientes();
+  </script>
+</body>
+</html>

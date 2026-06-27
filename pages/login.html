@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión – ZV Publicidad Digital</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--color-gray-50); }
+    .auth-wrapper { width:100%; max-width:420px; padding:var(--space-4); }
+    .auth-logo { text-align:center; margin-bottom:var(--space-8); }
+    .auth-logo a { display:inline-flex; align-items:center; gap:var(--space-3); text-decoration:none; }
+    .auth-logo img { height:40px; object-fit:contain; }
+    .auth-logo-text { font-size:var(--text-2xl); font-weight:var(--font-bold); color:var(--color-primary); }
+    .auth-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-xl); padding:var(--space-8); box-shadow:var(--shadow-lg); }
+    .auth-title { font-size:var(--text-2xl); font-weight:var(--font-bold); text-align:center; margin-bottom:var(--space-1); }
+    .auth-subtitle { text-align:center; color:var(--text-muted); font-size:var(--text-sm); margin-bottom:var(--space-6); }
+    .auth-footer { text-align:center; margin-top:var(--space-5); font-size:var(--text-sm); color:var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-logo">
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="ZV Publicidad Digital" onerror="this.style.display='none'">
+        <span class="auth-logo-text">ZV Publicidad</span>
+      </a>
+    </div>
+
+    <div class="auth-card">
+      <h1 class="auth-title">Bienvenido de vuelta</h1>
+      <p class="auth-subtitle">Ingresa tus credenciales para acceder a tu panel</p>
+
+      <div id="alerta-login" style="display:none" class="alert"></div>
+
+      <form id="form-login" novalidate>
+        <div class="form-group">
+          <label class="form-label required" for="email">Correo electrónico</label>
+          <input class="form-control" type="email" id="email" name="email"
+            placeholder="tu@email.com" autocomplete="email" required>
+          <span class="form-error" id="email-error" style="display:none"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="password">Contraseña</label>
+          <div style="position:relative">
+            <input class="form-control" type="password" id="password" name="password"
+              placeholder="••••••••" autocomplete="current-password" required style="padding-right:48px">
+            <button type="button" id="toggle-password"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem"
+              aria-label="Mostrar/ocultar contraseña">👁</button>
+          </div>
+          <span class="form-error" id="password-error" style="display:none"></span>
+        </div>
+
+        <div style="text-align:right;margin-top:-8px;margin-bottom:var(--space-5)">
+          <a href="#" id="link-olvide" style="font-size:var(--text-sm);color:var(--color-primary)">
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="btn-login">
+          Iniciar sesión
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        ¿No tienes cuenta? <a href="registro.html">Regístrate gratis</a>
+      </div>
+    </div>
+
+    <p style="text-align:center;margin-top:var(--space-4);font-size:var(--text-xs);color:var(--text-muted)">
+      <a href="../index.html" style="color:var(--text-muted)">← Volver al inicio</a>
+    </p>
+  </div>
+
+  <script type="module">
+    import { iniciarSesion, redirectIfAuthenticated, olvideMiContrasena } from '../assets/js/auth.js';
+    import { toast, escapeHtml } from '../assets/js/utils.js';
+    import { esEmailValido } from '../assets/js/utils.js';
+
+    // Si ya está logueado, redirigir
+    await redirectIfAuthenticated();
+
+    const form    = document.getElementById('form-login');
+    const alerta  = document.getElementById('alerta-login');
+    const btnLogin = document.getElementById('btn-login');
+
+    // Toggle password
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    // Olvidé contraseña
+    document.getElementById('link-olvide').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if (!esEmailValido(email)) {
+        toast.warning('Ingresa primero tu correo electrónico');
+        document.getElementById('email').focus();
+        return;
+      }
+      btnLogin.disabled = true;
+      const { error } = await olvideMiContrasena(email);
+      btnLogin.disabled = false;
+      if (error) {
+        toast.error('No se pudo enviar el email. Verifica tu correo.');
+      } else {
+        toast.success(`Revisa tu email: ${escapeHtml(email)}`, 'Email enviado');
+      }
+    });
+
+    // Submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alerta.style.display = 'none';
+
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      // Validaciones simples
+      let valid = true;
+      if (!esEmailValido(email)) {
+        document.getElementById('email-error').textContent = 'Ingresa un email válido';
+        document.getElementById('email-error').style.display = 'flex';
+        document.getElementById('email').classList.add('error');
+        valid = false;
+      } else {
+        document.getElementById('email-error').style.display = 'none';
+        document.getElementById('email').classList.remove('error');
+      }
+
+      if (!password || password.length < 6) {
+        document.getElementById('password-error').textContent = 'La contraseña es requerida';
+        document.getElementById('password-error').style.display = 'flex';
+        document.getElementById('password').classList.add('error');
+        valid = false;
+      } else {
+        document.getElementById('password-error').style.display = 'none';
+        document.getElementById('password').classList.remove('error');
+      }
+
+      if (!valid) return;
+
+      btnLogin.disabled = true;
+      btnLogin.innerHTML = '<span class="btn-spinner"></span> Ingresando...';
+
+      const { data, error } = await iniciarSesion({ email, password });
+
+      if (error) {
+        alerta.className = 'alert alert-danger';
+        alerta.innerHTML = `<span class="alert-icon">❌</span><span>Credenciales incorrectas. Verifica tu email y contraseña.</span>`;
+        alerta.style.display = 'flex';
+        btnLogin.disabled = false;
+        btnLogin.textContent = 'Iniciar sesión';
+        return;
+      }
+
+      // Éxito - redirigir según rol
+      const usuario = data.user;
+      // El perfil se carga en auth.js; redirigir al dashboard
+      btnLogin.innerHTML = '<span class="btn-spinner"></span> Redirigiendo...';
+
+      // Obtener perfil para saber el rol
+      import('../assets/js/supabase-data.js').then(async ({ default: d, ...data }) => {
+        const { supabase } = await import('../assets/js/supabase-client.js');
+        const { data: perfil } = await supabase.from('usuarios').select('rol').eq('id', usuario.id).single();
+        const rol = perfil?.rol || 'cliente';
+        window.location.href = rol === 'admin' ? 'admin/dashboard.html' : 'cliente/dashboard.html';
+      });
+    });
+  </script>
+</body>
+</html>

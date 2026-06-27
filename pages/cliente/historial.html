@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Panel Cliente</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Mi Panel
+        </a>
+        <a href="mis-anuncios.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Mis Anuncios
+        </a>
+        <a href="recargar.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          Contratar Plan
+        </a>
+        <a href="historial.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Historial
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Historial</h1>
+          <div class="breadcrumb-path">Panel › Historial</div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- TABS -->
+        <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-6);border-bottom:2px solid var(--border-color)">
+          <button class="btn btn-ghost tab-btn active" data-tab="recargas" style="border-radius:var(--border-radius) var(--border-radius) 0 0;border-bottom:2px solid var(--color-primary);margin-bottom:-2px">
+            💳 Solicitudes de pago
+          </button>
+          <button class="btn btn-ghost tab-btn" data-tab="contrataciones" style="border-radius:var(--border-radius) var(--border-radius) 0 0">
+            📋 Contrataciones
+          </button>
+        </div>
+
+        <!-- TAB: RECARGAS -->
+        <div id="tab-recargas" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <h3>Mis solicitudes de pago</h3>
+              <a href="recargar.html" class="btn btn-sm btn-primary">+ Nueva solicitud</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Plan solicitado</th>
+                    <th>Monto</th>
+                    <th>N° Operación</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                    <th>Motivo rechazo</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-recargas">
+                  <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">
+                    <div class="spinner" style="margin:0 auto 12px"></div>Cargando...
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div id="paginacion-recargas" style="padding:var(--space-4)"></div>
+          </div>
+        </div>
+
+        <!-- TAB: CONTRATACIONES -->
+        <div id="tab-contrataciones" class="tab-content" style="display:none">
+          <div class="card">
+            <div class="card-header">
+              <h3>Mis contrataciones</h3>
+            </div>
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Inicio</th>
+                    <th>Fin</th>
+                    <th>Estado</th>
+                    <th>Días rest.</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-contrataciones">
+                  <tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted)">
+                    <div class="spinner" style="margin:0 auto 12px"></div>Cargando...
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel } from '../../assets/js/main.js';
+    import { misRecargas, misContrataciones } from '../../assets/js/supabase-data.js';
+    import { badgeEstado, badgePlan, formatearSoles, formatearFecha, diasRestantes, escapeHtml, renderPaginacion } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('cliente');
+    if (!perfil) throw new Error('No auth');
+    initPanel(perfil);
+
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => {
+          b.classList.remove('active');
+          b.style.borderBottom = 'none';
+        });
+        btn.classList.add('active');
+        btn.style.borderBottom = '2px solid var(--color-primary)';
+        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+        document.getElementById(`tab-${btn.dataset.tab}`).style.display = 'block';
+      });
+    });
+
+    // Cargar recargas
+    async function cargarRecargas(page = 1) {
+      const { data, count } = await misRecargas({ page });
+      const tbody = document.getElementById('tbody-recargas');
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">No tienes solicitudes de pago todavía. <a href="recargar.html">Contratar primer plan</a></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(r => `
+        <tr>
+          <td>${badgePlan(r.planes?.tipo || '')} ${escapeHtml(r.planes?.nombre || '—')}</td>
+          <td><strong style="color:var(--color-primary)">${formatearSoles(r.monto_declarado)}</strong></td>
+          <td><code style="font-size:0.8rem">${escapeHtml(r.numero_operacion)}</code></td>
+          <td>${badgeEstado(r.estado)}</td>
+          <td style="font-size:0.8rem">${formatearFecha(r.created_at)}</td>
+          <td style="font-size:0.8rem;color:var(--color-danger)">${r.motivo_rechazo ? escapeHtml(r.motivo_rechazo) : '—'}</td>
+        </tr>
+      `).join('');
+
+      const paginacion = document.getElementById('paginacion-recargas');
+      const totalPag = Math.ceil((count || 0) / 20);
+      const nav = renderPaginacion(page, totalPag, cargarRecargas);
+      paginacion.innerHTML = '';
+      if (nav) paginacion.appendChild(nav);
+    }
+
+    // Cargar contrataciones
+    async function cargarContrataciones() {
+      const { data } = await misContrataciones();
+      const tbody = document.getElementById('tbody-contrataciones');
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted)">No tienes contrataciones todavía.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(c => {
+        const dias = diasRestantes(c.fecha_fin);
+        return `
+          <tr>
+            <td>${badgePlan(c.planes?.tipo || '')} ${escapeHtml(c.planes?.nombre || '—')}</td>
+            <td>${formatearFecha(c.fecha_inicio)}</td>
+            <td>${formatearFecha(c.fecha_fin)}</td>
+            <td>${badgeEstado(c.estado)}</td>
+            <td>
+              ${c.estado === 'activo'
+                ? `<span style="color:${dias < 3 ? 'var(--color-danger)' : 'var(--color-success)'}">
+                    ${dias} día${dias !== 1 ? 's' : ''}
+                   </span>`
+                : '—'
+              }
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    cargarRecargas();
+    cargarContrataciones();
+  </script>
+</body>
+</html>

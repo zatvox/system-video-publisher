@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Administración</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Principal</span>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="validaciones.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Validaciones
+          <span class="nav-badge" data-badge="validaciones" style="display:none">0</span>
+        </a>
+        <span class="sidebar-section-label">Gestión</span>
+        <a href="clientes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Clientes
+        </a>
+        <a href="planes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Planes y precios
+        </a>
+        <a href="pantallas.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pantallas TV
+        </a>
+        <a href="reportes.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+          Reportes
+        </a>
+        <span class="sidebar-section-label">Links</span>
+        <a href="../../tv.html" target="_blank" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Ver carrusel TV
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrador</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Reportes</h1>
+          <div class="breadcrumb-path">Admin › Reportes</div>
+        </div>
+        <div class="header-actions">
+          <div style="display:flex;gap:var(--space-3);align-items:center">
+            <label style="font-size:var(--text-sm);color:var(--text-muted)">Mes:</label>
+            <input type="month" class="form-control" id="filtro-mes" style="width:160px">
+          </div>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- KPIs del mes -->
+        <div class="stats-grid" id="kpis-mes" style="margin-bottom:var(--space-6)">
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-label">Ingresos del mes</span><div class="stat-icon stat-icon-green">💰</div></div>
+            <div class="stat-value" id="rep-ingresos">—</div>
+            <div class="stat-sub">Vouchers aprobados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-label">Recargas aprobadas</span><div class="stat-icon stat-icon-blue">✅</div></div>
+            <div class="stat-value" id="rep-recargas">—</div>
+            <div class="stat-sub">Este mes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-label">Nuevos clientes</span><div class="stat-icon stat-icon-blue">👥</div></div>
+            <div class="stat-value" id="rep-clientes-nuevos">—</div>
+            <div class="stat-sub">Registros en el mes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header"><span class="stat-label">Rechazados</span><div class="stat-icon stat-icon-orange">❌</div></div>
+            <div class="stat-value" id="rep-rechazados" style="color:var(--color-danger)">—</div>
+            <div class="stat-sub">Vouchers rechazados</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="gap:var(--space-6);margin-bottom:var(--space-6)">
+          <!-- Ocupación slots por hora -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Ocupación de slots ahora</h3>
+              <span style="font-size:var(--text-xs);color:var(--text-muted)">Actualizado al cargar</span>
+            </div>
+            <div class="card-body" id="ocupacion-ahora">
+              <div style="text-align:center;padding:var(--space-6);color:var(--text-muted)">
+                <div class="spinner" style="margin:0 auto 12px"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ingresos por plan -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Ingresos por tipo de plan</h3>
+              <span style="font-size:var(--text-xs);color:var(--text-muted)" id="mes-label-plan">Este mes</span>
+            </div>
+            <div class="card-body" id="ingresos-por-plan">
+              <div style="text-align:center;padding:var(--space-6);color:var(--text-muted)">
+                <div class="spinner" style="margin:0 auto 12px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historial de recargas del mes -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Detalle de ingresos del mes</h3>
+            <button class="btn btn-sm btn-ghost" id="btn-exportar-csv">⬇ Exportar CSV</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Cliente</th>
+                  <th>Plan</th>
+                  <th>N° Operación</th>
+                  <th>Banco</th>
+                  <th>Monto</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-reporte">
+                <tr><td colspan="7" style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto 12px"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="padding:var(--space-4);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:var(--text-sm);color:var(--text-muted)" id="reporte-totales">—</span>
+            <div id="paginacion-reporte"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel } from '../../assets/js/main.js';
+    import { supabase } from '../../assets/js/supabase-client.js';
+    import { formatearSoles, formatearFechaHora, badgeEstado, escapeHtml, renderPaginacion } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('admin');
+    if (!perfil) throw new Error('No auth');
+    initPanel(perfil);
+
+    // Mes por defecto = mes actual
+    const hoy = new Date();
+    const mesInput = document.getElementById('filtro-mes');
+    mesInput.value = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+
+    let paginaActual = 1;
+    let datosCsv = [];
+
+    async function cargarReporte() {
+      const mes = mesInput.value;
+      if (!mes) return;
+
+      const [year, month] = mes.split('-').map(Number);
+      const inicio = new Date(year, month - 1, 1).toISOString();
+      const fin    = new Date(year, month, 0, 23, 59, 59).toISOString();
+
+      // KPIs
+      const { data: recargas } = await supabase
+        .from('recargas')
+        .select('estado, monto_declarado, planes(nombre, tipo), usuarios!recargas_cliente_id_fkey(nombre, email), numero_operacion, banco_origen, created_at')
+        .gte('created_at', inicio)
+        .lte('created_at', fin)
+        .order('created_at', { ascending: false });
+
+      const aprobadas = (recargas || []).filter(r => r.estado === 'aprobado');
+      const rechazadas = (recargas || []).filter(r => r.estado === 'rechazado');
+      const totalIngresos = aprobadas.reduce((s, r) => s + (r.monto_declarado || 0), 0);
+
+      document.getElementById('rep-ingresos').textContent = formatearSoles(totalIngresos);
+      document.getElementById('rep-recargas').textContent = aprobadas.length;
+      document.getElementById('rep-rechazados').textContent = rechazadas.length;
+
+      // Nuevos clientes del mes
+      const { count: nuevosClientes } = await supabase
+        .from('usuarios')
+        .select('*', { count: 'exact', head: true })
+        .eq('rol', 'cliente')
+        .gte('created_at', inicio)
+        .lte('created_at', fin);
+      document.getElementById('rep-clientes-nuevos').textContent = nuevosClientes || 0;
+
+      // Ingresos por plan
+      const porPlan = {};
+      aprobadas.forEach(r => {
+        const planNombre = r.planes?.nombre || 'Desconocido';
+        porPlan[planNombre] = (porPlan[planNombre] || 0) + (r.monto_declarado || 0);
+      });
+
+      const ingresosEl = document.getElementById('ingresos-por-plan');
+      if (Object.keys(porPlan).length === 0) {
+        ingresosEl.innerHTML = '<p style="color:var(--text-muted);text-align:center">Sin ingresos este mes.</p>';
+      } else {
+        const maxVal = Math.max(...Object.values(porPlan));
+        ingresosEl.innerHTML = Object.entries(porPlan)
+          .sort((a, b) => b[1] - a[1])
+          .map(([nombre, monto]) => {
+            const pct = maxVal > 0 ? Math.round((monto / maxVal) * 100) : 0;
+            return `
+              <div style="margin-bottom:var(--space-4)">
+                <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                  <span style="font-size:var(--text-sm)">${escapeHtml(nombre)}</span>
+                  <strong>${formatearSoles(monto)}</strong>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" style="width:${pct}%"></div>
+                </div>
+              </div>
+            `;
+          }).join('');
+      }
+
+      // Tabla de detalle
+      datosCsv = recargas || [];
+      renderTabla(datosCsv, 1);
+
+      // Totales footer
+      document.getElementById('reporte-totales').textContent =
+        `${(recargas || []).length} transacciones · Ingresos aprobados: ${formatearSoles(totalIngresos)}`;
+    }
+
+    function renderTabla(rows, page) {
+      paginaActual = page;
+      const pageSize = 20;
+      const start = (page - 1) * pageSize;
+      const slice = rows.slice(start, start + pageSize);
+      const tbody = document.getElementById('tbody-reporte');
+
+      if (!slice.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">No hay transacciones en este período.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = slice.map(r => `
+        <tr>
+          <td style="font-size:var(--text-sm)">${formatearFechaHora(r.created_at)}</td>
+          <td>
+            <div style="font-weight:600;font-size:var(--text-sm)">${escapeHtml(r.usuarios?.nombre || '—')}</div>
+            <div style="font-size:var(--text-xs);color:var(--text-muted)">${escapeHtml(r.usuarios?.email || '')}</div>
+          </td>
+          <td style="font-size:var(--text-sm)">${escapeHtml(r.planes?.nombre || '—')}</td>
+          <td><code style="font-size:0.8rem">${escapeHtml(r.numero_operacion || '—')}</code></td>
+          <td style="font-size:var(--text-sm)">${escapeHtml(r.banco_origen || '—')}</td>
+          <td><strong style="color:${r.estado === 'aprobado' ? 'var(--color-success)' : 'inherit'}">${formatearSoles(r.monto_declarado)}</strong></td>
+          <td>${badgeEstado(r.estado)}</td>
+        </tr>
+      `).join('');
+
+      const totalPag = Math.ceil(rows.length / pageSize);
+      const paginacion = document.getElementById('paginacion-reporte');
+      const nav = renderPaginacion(paginaActual, totalPag, (p) => renderTabla(datosCsv, p));
+      paginacion.innerHTML = '';
+      if (nav) paginacion.appendChild(nav);
+    }
+
+    // Ocupación de slots ahora
+    async function cargarOcupacion() {
+      const { data: carrusel } = await supabase.from('vista_carrusel_actual').select('*');
+      const el = document.getElementById('ocupacion-ahora');
+      const total = 6;
+      const ocupados = (carrusel || []).length;
+
+      const slotsHtml = Array.from({ length: total }).map((_, i) => {
+        const anuncio = (carrusel || [])[i];
+        return `
+          <div class="slot-block ${anuncio ? (i >= total ? 'slot-sobreventa' : 'slot-ocupado') : 'slot-libre'}"
+               title="${anuncio ? anuncio.plan_nombre : 'Libre'}">
+            ${anuncio ? '●' : '○'}
+          </div>
+        `;
+      }).join('');
+
+      const detalle = (carrusel || []).map(a => `
+        <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:1px solid var(--border-color);font-size:var(--text-sm)">
+          <span>${a.tipo === 'video' ? '🎬' : '🖼️'}</span>
+          <span style="flex:1">${escapeHtml(a.plan_nombre)}</span>
+          <span class="badge ${a.prioridad_garantizada ? 'badge-success' : 'badge-gray'}" style="font-size:10px">
+            ${a.prioridad_garantizada ? 'Prioritario' : 'Básico'}
+          </span>
+        </div>
+      `).join('') || '<p style="color:var(--text-muted);font-size:var(--text-sm)">Sin anuncios activos.</p>';
+
+      el.innerHTML = `
+        <div class="slots-grid" style="margin-bottom:var(--space-3)">${slotsHtml}</div>
+        <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4)">${ocupados}/${total} slots ocupados</p>
+        <div>${detalle}</div>
+      `;
+    }
+
+    // Exportar CSV
+    document.getElementById('btn-exportar-csv').addEventListener('click', () => {
+      if (!datosCsv.length) return;
+      const encabezado = 'Fecha,Cliente,Email,Plan,N°Operación,Banco,Monto,Estado\n';
+      const filas = datosCsv.map(r => [
+        r.created_at,
+        r.usuarios?.nombre || '',
+        r.usuarios?.email || '',
+        r.planes?.nombre || '',
+        r.numero_operacion || '',
+        r.banco_origen || '',
+        r.monto_declarado,
+        r.estado
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+      const blob = new Blob(['﻿' + encabezado + filas], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `reporte-${mesInput.value}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    mesInput.addEventListener('change', cargarReporte);
+    cargarReporte();
+    cargarOcupacion();
+  </script>
+</body>
+</html>

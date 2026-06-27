@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear cuenta – ZV Publicidad Digital</title>
+  <link rel="icon" href="../favicon.ico">
+  <link rel="stylesheet" href="../assets/css/variables.css">
+  <link rel="stylesheet" href="../assets/css/styles.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/responsive.css">
+  <style>
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--color-gray-50); padding:var(--space-4) 0; }
+    .auth-wrapper { width:100%; max-width:460px; padding:var(--space-4); }
+    .auth-logo { text-align:center; margin-bottom:var(--space-6); }
+    .auth-logo a { display:inline-flex; align-items:center; gap:var(--space-3); text-decoration:none; }
+    .auth-logo img { height:40px; object-fit:contain; }
+    .auth-logo-text { font-size:var(--text-2xl); font-weight:var(--font-bold); color:var(--color-primary); }
+    .auth-card { background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--border-radius-xl); padding:var(--space-8); box-shadow:var(--shadow-lg); }
+    .auth-title { font-size:var(--text-2xl); font-weight:var(--font-bold); text-align:center; margin-bottom:var(--space-1); }
+    .auth-subtitle { text-align:center; color:var(--text-muted); font-size:var(--text-sm); margin-bottom:var(--space-6); }
+    .auth-footer { text-align:center; margin-top:var(--space-5); font-size:var(--text-sm); color:var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="auth-wrapper">
+    <div class="auth-logo">
+      <a href="../index.html">
+        <img src="../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <span class="auth-logo-text">ZV Publicidad</span>
+      </a>
+    </div>
+
+    <div class="auth-card">
+      <h1 class="auth-title">Crear cuenta gratis</h1>
+      <p class="auth-subtitle">Empieza a publicitar tu negocio en minutos</p>
+
+      <div id="alerta-registro" style="display:none" class="alert"></div>
+
+      <form id="form-registro" novalidate>
+        <div class="form-group">
+          <label class="form-label required" for="nombre">Nombre completo o empresa</label>
+          <input class="form-control" type="text" id="nombre" name="nombre"
+            placeholder="Tu nombre o razón social" autocomplete="name" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="email">Correo electrónico</label>
+          <input class="form-control" type="email" id="email" name="email"
+            placeholder="tu@email.com" autocomplete="email" required>
+          <span class="form-hint">Usarás este email para iniciar sesión</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="telefono">Teléfono / WhatsApp</label>
+          <input class="form-control" type="tel" id="telefono" name="telefono"
+            placeholder="+51 999 999 999" autocomplete="tel">
+          <span class="form-hint">Para comunicarnos contigo sobre tu anuncio</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="password">Contraseña</label>
+          <div style="position:relative">
+            <input class="form-control" type="password" id="password" name="password"
+              placeholder="Mínimo 8 caracteres" autocomplete="new-password" required style="padding-right:48px">
+            <button type="button" id="toggle-password"
+              style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem"
+              aria-label="Mostrar contraseña">👁</button>
+          </div>
+          <span class="form-hint">Mínimo 8 caracteres</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label required" for="password2">Confirmar contraseña</label>
+          <input class="form-control" type="password" id="password2" name="password2"
+            placeholder="Repite tu contraseña" autocomplete="new-password" required>
+        </div>
+
+        <!-- SEGURIDAD Y GARANTÍA -->
+        <div class="alert alert-info" style="margin-bottom:var(--space-4);font-size:var(--text-sm)">
+          <span class="alert-icon">🔒</span>
+          <div>
+            <strong>Tu seguridad y privacidad</strong>
+            <ul style="margin:6px 0 0 0;padding-left:16px;line-height:1.8">
+              <li>Tu contraseña se almacena cifrada. Nosotros nunca la vemos.</li>
+              <li>Tus datos personales se usan solo para gestionar tu publicidad.</li>
+              <li>No compartimos tu información con terceros ni enviamos spam.</li>
+              <li>El pago es manual: depositas y subes foto del comprobante. El admin valida en horas hábiles.</li>
+              <li><strong>Garantía:</strong> Si tu plan es aprobado y no aparece en pantalla, lo corregimos. No se realizan devoluciones una vez activado el anuncio.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-bottom:var(--space-6)">
+          <label style="display:flex;align-items:flex-start;gap:var(--space-3);cursor:pointer">
+            <input type="checkbox" id="acepta-terminos" style="margin-top:3px;width:16px;height:16px;flex-shrink:0">
+            <span style="font-size:var(--text-sm);color:var(--text-secondary)">
+              Acepto los <a href="../index.html#terminos" style="color:var(--color-primary)" target="_blank">Términos de uso</a>
+              y la <a href="../index.html#privacidad" style="color:var(--color-primary)" target="_blank">Política de privacidad</a>.
+              Entiendo que el pago es por depósito bancario y se valida manualmente.
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full btn-lg" id="btn-registro">
+          Crear cuenta
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        ¿Ya tienes cuenta? <a href="login.html">Iniciar sesión</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { registrarCliente, redirectIfAuthenticated } from '../assets/js/auth.js';
+    import { toast, esEmailValido, esContrasenaValida } from '../assets/js/utils.js';
+
+    await redirectIfAuthenticated();
+
+    const form   = document.getElementById('form-registro');
+    const alerta = document.getElementById('alerta-registro');
+    const btn    = document.getElementById('btn-registro');
+
+    document.getElementById('toggle-password').addEventListener('click', () => {
+      const input = document.getElementById('password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alerta.style.display = 'none';
+
+      const nombre   = document.getElementById('nombre').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const telefono = document.getElementById('telefono').value.trim();
+      const password = document.getElementById('password').value;
+      const password2 = document.getElementById('password2').value;
+      const acepta   = document.getElementById('acepta-terminos').checked;
+
+      // Validaciones
+      if (!nombre) { toast.error('Ingresa tu nombre'); return; }
+      if (!esEmailValido(email)) { toast.error('Ingresa un email válido'); return; }
+      if (!esContrasenaValida(password)) { toast.error('La contraseña debe tener al menos 8 caracteres'); return; }
+      if (password !== password2) { toast.error('Las contraseñas no coinciden'); return; }
+      if (!acepta) { toast.warning('Debes aceptar los términos de uso'); return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="btn-spinner"></span> Creando cuenta...';
+
+      const { data, error } = await registrarCliente({ email, password, nombre, telefono });
+
+      if (error) {
+        let msg = 'Error al crear la cuenta.';
+        if (error.message?.includes('already registered')) msg = 'Este email ya está registrado. <a href="login.html">Inicia sesión</a>';
+        alerta.className = 'alert alert-danger';
+        alerta.innerHTML = `<span class="alert-icon">❌</span><span>${msg}</span>`;
+        alerta.style.display = 'flex';
+        btn.disabled = false;
+        btn.textContent = 'Crear cuenta';
+        return;
+      }
+
+      // Verificar si Supabase requiere confirmación de email
+      if (data.user && !data.session) {
+        alerta.className = 'alert alert-success';
+        alerta.innerHTML = `<span class="alert-icon">✅</span><div><strong>¡Cuenta creada!</strong> Revisa tu email para confirmar tu cuenta antes de iniciar sesión.</div>`;
+        alerta.style.display = 'flex';
+        btn.textContent = 'Cuenta creada';
+        return;
+      }
+
+      // Login directo (sin confirmación de email requerida)
+      toast.success('¡Bienvenido/a! Redirigiendo a tu panel...');
+      setTimeout(() => { window.location.href = 'cliente/dashboard.html'; }, 1500);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+/* ============================================================
+   RESPONSIVE.CSS - ZV Publicidad Digital
+   Mobile-first breakpoints: 320px → 640px → 1024px → 1440px
+   ============================================================ */
+
+/* ══ MOBILE BASE (320px+) ══ */
+/* Aplicado en styles.css y components.css por defecto */
+
+/* App layout mobile: sidebar oculto, sin margen */
+.app-main {
+  margin-left: 0;
+}
+
+.app-sidebar {
+  transform: translateX(-100%);
+}
+
+.app-sidebar.open {
+  transform: translateX(0);
+  box-shadow: var(--shadow-xl);
+}
+
+.btn-sidebar-toggle {
+  display: flex;
+}
+
+/* Mobile overlay cuando sidebar está abierto */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  z-index: calc(var(--z-sidebar) - 1);
+}
+
+.sidebar-overlay.visible {
+  display: block;
+  animation: fadeIn var(--transition-fast) ease;
+}
+
+/* Landing nav mobile: ocultar links, mostrar solo botones */
+.landing-nav .nav-links {
+  display: none;
+}
+
+/* Grid: 1 columna en mobile */
+.grid-2, .grid-3, .grid-4 {
+  grid-template-columns: 1fr;
+}
+
+/* Stats: 2 columnas en mobile */
+.stats-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Content padding reducido en mobile */
+.app-content {
+  padding: var(--space-5) var(--space-4);
+}
+
+/* Hero section */
+.hero {
+  padding: var(--space-16) var(--space-4);
+}
+
+.hero h1 {
+  font-size: clamp(1.75rem, 6vw, 2.25rem);
+}
+
+.hero-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+section {
+  padding: var(--space-12) var(--space-4);
+}
+
+/* Modal: pantalla completa en mobile */
+.modal-backdrop {
+  padding: 0;
+  align-items: flex-end;
+}
+
+.modal {
+  max-width: 100%;
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+  max-height: 95vh;
+}
+
+/* Tabla: scroll horizontal en mobile */
+.table th, .table td {
+  padding: var(--space-3);
+}
+
+/* Card: sin overflow hidden en mobile para que el contenido respire */
+.card-body { padding: var(--space-4); }
+
+/* Plan cards: 1 columna */
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+/* Anuncios: 1 columna */
+.anuncios-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+/* Form full width en mobile */
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Breadcrumb: ocultar ruta en mobile */
+.header-breadcrumb .breadcrumb-path { display: none; }
+
+/* Slots grid: 6 slots en una fila (pequeños) */
+.slots-grid { gap: var(--space-1); }
+
+/* Trim editor: stack vertical */
+.trim-actions { flex-direction: column; }
+
+/* ══ TABLET PEQUEÑO (640px+) ══ */
+@media (min-width: 640px) {
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  .plans-grid { grid-template-columns: repeat(2, 1fr); }
+  .anuncios-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .hero-actions {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-backdrop { align-items: center; padding: var(--space-4); }
+  .modal {
+    border-radius: var(--border-radius-xl);
+    max-height: 90vh;
+  }
+
+  .form-row {
+    flex-direction: row;
+    gap: var(--space-4);
+  }
+
+  .form-row .form-group { flex: 1; margin-bottom: 0; }
+
+  .header-breadcrumb .breadcrumb-path { display: block; }
+
+  section {
+    padding: var(--space-16) var(--space-6);
+  }
+
+  .trim-actions { flex-direction: row; }
+}
+
+/* ══ TABLET / DESKTOP PEQUEÑO (1024px+) ══ */
+@media (min-width: 1024px) {
+  /* Sidebar fijo en desktop */
+  .app-sidebar {
+    transform: translateX(0);
+    position: fixed;
+  }
+
+  .app-main {
+    margin-left: var(--sidebar-width);
+  }
+
+  .btn-sidebar-toggle {
+    display: none;
+  }
+
+  .sidebar-overlay { display: none !important; }
+
+  /* Grids de 3 columnas */
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .plans-grid { grid-template-columns: repeat(3, 1fr); }
+  .anuncios-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* Landing nav: mostrar links */
+  .landing-nav .nav-links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-6);
+  }
+
+  /* Content: más padding */
+  .app-content {
+    padding: var(--space-8) var(--space-8);
+  }
+
+  /* Stats: 4 columnas */
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+
+  section {
+    padding: var(--space-20) var(--container-padding);
+  }
+
+  .hero { padding: var(--space-24) var(--container-padding); }
+}
+
+/* ══ DESKTOP GRANDE (1440px+) ══ */
+@media (min-width: 1440px) {
+  .plans-grid { grid-template-columns: repeat(5, 1fr); }
+  .anuncios-grid { grid-template-columns: repeat(4, 1fr); }
+
+  .landing-header-inner,
+  .section-inner {
+    max-width: var(--container-max);
+    margin: 0 auto;
+  }
+}
+
+/* ══ TV PLAYER (siempre full screen) ══ */
+.tv-player-body {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ══ PRINT ══ */
+@media print {
+  .app-sidebar,
+  .app-header,
+  .btn,
+  .modal-backdrop,
+  #toast-container {
+    display: none !important;
+  }
+
+  .app-main { margin-left: 0; }
+  .app-content { padding: 0; }
+}
+
+/* ══ HIGH CONTRAST / ACCESIBILIDAD ══ */
+@media (forced-colors: active) {
+  .btn { border: 2px solid ButtonText; }
+  .form-control { border: 2px solid ButtonText; }
+  .badge { border: 1px solid ButtonText; }
+}

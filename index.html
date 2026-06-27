@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZV Publicidad Digital – Anúnciate en nuestras pantallas</title>
+  <meta name="description" content="Publica tu anuncio en nuestras Smart TVs. Planes desde S/1. Contratación 100% online.">
+  <meta property="og:title" content="ZV Publicidad Digital">
+  <meta property="og:description" content="Publicidad digital en pantallas Smart TV. Planes flexibles desde S/1.">
+  <link rel="icon" href="favicon.ico">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="assets/css/variables.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/responsive.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Ir al contenido principal</a>
+  <div id="toast-container" aria-live="polite"></div>
+
+  <!-- ── HEADER ── -->
+  <header class="landing-header">
+    <div class="landing-header-inner">
+      <a href="index.html" class="landing-logo" aria-label="ZV Publicidad Digital - Inicio">
+        <img src="assets/images/logo.png" alt="ZV Publicidad Digital" onerror="this.style.display='none'">
+        <span class="landing-logo-text">ZV Publicidad</span>
+      </a>
+      <nav class="landing-nav" aria-label="Navegación principal">
+        <div class="nav-links">
+          <a href="#planes">Planes</a>
+          <a href="#como-funciona">¿Cómo funciona?</a>
+          <a href="#contacto">Contacto</a>
+        </div>
+        <a href="pages/login.html" class="btn btn-ghost btn-sm">Iniciar sesión</a>
+        <a href="pages/registro.html" class="btn btn-primary btn-sm">Publicar ahora</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- ── HERO ── -->
+    <section class="hero" aria-labelledby="hero-titulo">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>📺</span> Digital Signage en Smart TV
+        </div>
+        <h1 id="hero-titulo">
+          Tu anuncio en pantalla,<br><span>visible para todos</span>
+        </h1>
+        <p>
+          Publica tu foto o video en nuestras Smart TVs y llega a cientos de personas cada día.
+          Planes desde <strong>S/ 1.00</strong>. Sin contratos largos. Sin complicaciones.
+        </p>
+        <div class="hero-actions">
+          <a href="pages/registro.html" class="btn btn-accent btn-xl">
+            🚀 Empezar ahora
+          </a>
+          <a href="#como-funciona" class="btn btn-lg" style="background:rgba(255,255,255,0.15);color:white;border-color:rgba(255,255,255,0.3)">
+            Ver cómo funciona
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── STATS ── -->
+    <section style="background:var(--bg-card);border-bottom:1px solid var(--border-color);padding:var(--space-10) var(--container-padding)">
+      <div class="section-inner">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Horas de transmisión</span>
+              <div class="stat-icon stat-icon-blue">📺</div>
+            </div>
+            <div class="stat-value">11</div>
+            <div class="stat-sub">Horas diarias (8am – 7pm)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Repeticiones por hora</span>
+              <div class="stat-icon stat-icon-orange">🔄</div>
+            </div>
+            <div class="stat-value">60</div>
+            <div class="stat-sub">Tu anuncio aparece 1 vez por minuto</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Plan mensual</span>
+              <div class="stat-icon stat-icon-green">💰</div>
+            </div>
+            <div class="stat-value" id="stat-repeticiones-mensual">19,800</div>
+            <div class="stat-sub">Repeticiones garantizadas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Precio mínimo</span>
+              <div class="stat-icon stat-icon-red">🎯</div>
+            </div>
+            <div class="stat-value">S/1</div>
+            <div class="stat-sub">Plan básico por publicación</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CÓMO FUNCIONA ── -->
+    <section id="como-funciona" aria-labelledby="como-titulo">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2 id="como-titulo">¿Cómo funciona?</h2>
+          <p>Proceso simple en 4 pasos. Sin instalaciones ni complicaciones técnicas.</p>
+        </div>
+        <div class="grid-4">
+          <div style="text-align:center;padding:var(--space-6)">
+            <div style="font-size:3rem;margin-bottom:var(--space-4)">1️⃣</div>
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-2)">Crea tu cuenta</h3>
+            <p style="font-size:var(--text-sm)">Regístrate gratis con tu email. En menos de un minuto tienes acceso a tu panel.</p>
+          </div>
+          <div style="text-align:center;padding:var(--space-6)">
+            <div style="font-size:3rem;margin-bottom:var(--space-4)">2️⃣</div>
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-2)">Elige tu plan</h3>
+            <p style="font-size:var(--text-sm)">Selecciona el plan que se ajusta a tu presupuesto y depósita el monto indicado.</p>
+          </div>
+          <div style="text-align:center;padding:var(--space-6)">
+            <div style="font-size:3rem;margin-bottom:var(--space-4)">3️⃣</div>
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-2)">Sube tu anuncio</h3>
+            <p style="font-size:var(--text-sm)">Carga tu foto JPG/PNG o video MP4. Si el video es largo, lo recortamos automáticamente a 10 seg.</p>
+          </div>
+          <div style="text-align:center;padding:var(--space-6)">
+            <div style="font-size:3rem;margin-bottom:var(--space-4)">4️⃣</div>
+            <h3 style="font-size:var(--text-lg);margin-bottom:var(--space-2)">¡En pantalla!</h3>
+            <p style="font-size:var(--text-sm)">Tras verificar tu pago, tu anuncio aparece en el carrusel de nuestra Smart TV automáticamente.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PLANES ── -->
+    <section id="planes" style="background:var(--color-gray-50)" aria-labelledby="planes-titulo">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2 id="planes-titulo">Planes y precios</h2>
+          <p>Todos los planes incluyen verificación manual de pago y soporte directo por WhatsApp.</p>
+        </div>
+
+        <!-- Planes cargados dinámicamente desde DB -->
+        <div class="plans-grid" id="planes-landing">
+          <!-- JS inserta aquí -->
+          <div class="plan-card">
+            <div class="plan-name">Mensual</div>
+            <div class="plan-price"><sup>S/</sup>500</div>
+            <div class="plan-period">30 días</div>
+            <ul class="plan-features">
+              <li>1 aparición por minuto garantizada</li>
+              <li>19,800 repeticiones totales</li>
+              <li>Cambia tu anuncio cuando quieras</li>
+              <li>Tú eliges las fechas</li>
+            </ul>
+            <a href="pages/registro.html?plan=mensual" class="btn btn-primary btn-full">Contratar</a>
+          </div>
+          <div class="plan-card">
+            <div class="plan-name">Semanal</div>
+            <div class="plan-price"><sup>S/</sup>150</div>
+            <div class="plan-period">7 días</div>
+            <ul class="plan-features">
+              <li>1 aparición por minuto garantizada</li>
+              <li>4,620 repeticiones totales</li>
+              <li>Tú eliges las fechas</li>
+            </ul>
+            <a href="pages/registro.html?plan=semanal" class="btn btn-primary btn-full">Contratar</a>
+          </div>
+          <div class="plan-card featured">
+            <span class="plan-badge">Más popular</span>
+            <div class="plan-name">Diario</div>
+            <div class="plan-price"><sup>S/</sup>30</div>
+            <div class="plan-period">1 día</div>
+            <ul class="plan-features">
+              <li>1 aparición por minuto garantizada</li>
+              <li>660 repeticiones totales</li>
+              <li>Tú eliges las fechas</li>
+            </ul>
+            <a href="pages/registro.html?plan=diario" class="btn btn-primary btn-full">Contratar</a>
+          </div>
+          <div class="plan-card">
+            <div class="plan-name">Por Hora</div>
+            <div class="plan-price"><sup>S/</sup>5</div>
+            <div class="plan-period">1 hora</div>
+            <ul class="plan-features">
+              <li>1 aparición por minuto garantizada</li>
+              <li>60 repeticiones en esa hora</li>
+              <li>Tú eliges la fecha y hora</li>
+            </ul>
+            <a href="pages/registro.html?plan=hora" class="btn btn-primary btn-full">Contratar</a>
+          </div>
+          <div class="plan-card">
+            <div class="plan-name">Básico</div>
+            <div class="plan-price"><sup>S/</sup>1</div>
+            <div class="plan-period">Hasta 5 apariciones</div>
+            <ul class="plan-features">
+              <li>Hasta 5 publicaciones puntuales</li>
+              <li>Aparece en huecos libres</li>
+              <li>Tú eliges el rango de fechas</li>
+            </ul>
+            <a href="pages/registro.html?plan=basico" class="btn btn-secondary btn-full">Contratar</a>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:var(--space-8)">
+          <p style="color:var(--text-muted);font-size:var(--text-sm)">
+            💡 Todos los planes requieren depósito o transferencia bancaria previa a la publicación.
+            <a href="#contacto">¿Tienes preguntas?</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FORMATOS ACEPTADOS ── -->
+    <section aria-labelledby="formatos-titulo">
+      <div class="section-inner">
+        <div class="section-header">
+          <h2 id="formatos-titulo">Formatos aceptados</h2>
+          <p>Soportamos imagen y video. El sistema recorta automáticamente los videos largos.</p>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-body" style="text-align:center;padding:var(--space-8)">
+              <div style="font-size:4rem;margin-bottom:var(--space-4)">🖼️</div>
+              <h3 style="margin-bottom:var(--space-3)">Imagen</h3>
+              <ul style="list-style:none;color:var(--text-secondary);font-size:var(--text-sm);line-height:2">
+                <li>Formato: JPG, PNG, WEBP</li>
+                <li>Tamaño máximo: 5 MB</li>
+                <li>Resolución recomendada: 1920×1080</li>
+                <li>Duración en pantalla: 10 segundos</li>
+              </ul>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align:center;padding:var(--space-8)">
+              <div style="font-size:4rem;margin-bottom:var(--space-4)">🎬</div>
+              <h3 style="margin-bottom:var(--space-3)">Video</h3>
+              <ul style="list-style:none;color:var(--text-secondary);font-size:var(--text-sm);line-height:2">
+                <li>Formato: MP4 (H.264)</li>
+                <li>Tamaño máximo: 15 MB</li>
+                <li>Resolución recomendada: 1920×1080</li>
+                <li>Si dura más de 10s → editor de recorte integrado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTACTO ── -->
+    <section id="contacto" style="background:var(--color-gray-50)" aria-labelledby="contacto-titulo">
+      <div class="section-inner" style="text-align:center">
+        <h2 id="contacto-titulo">¿Tienes preguntas?</h2>
+        <p style="margin-bottom:var(--space-8);font-size:var(--text-lg)">
+          Nuestro equipo está disponible para ayudarte a elegir el plan ideal para tu negocio.
+        </p>
+        <div style="display:flex;gap:var(--space-4);justify-content:center;flex-wrap:wrap">
+          <a id="link-whatsapp" href="#" class="btn btn-success btn-lg" target="_blank" rel="noopener">
+            💬 WhatsApp
+          </a>
+          <a href="pages/registro.html" class="btn btn-primary btn-lg">
+            🚀 Crear cuenta gratis
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer class="landing-footer">
+    <div class="footer-logo">ZV Publicidad Digital</div>
+    <p style="margin-bottom:var(--space-4)">Publicidad digital en pantallas Smart TV · Jhiro Peru S.A.C.</p>
+    <div style="display:flex;gap:var(--space-6);justify-content:center;margin-bottom:var(--space-6)">
+      <a href="pages/login.html" style="color:var(--color-gray-400)">Iniciar sesión</a>
+      <a href="pages/registro.html" style="color:var(--color-gray-400)">Registrarse</a>
+      <a href="#planes" style="color:var(--color-gray-400)">Planes</a>
+    </div>
+    <p style="font-size:var(--text-xs);color:var(--color-gray-600)">© 2026 Jhiro Peru S.A.C. Todos los derechos reservados.</p>
+    <p style="font-size:var(--text-xs);color:var(--color-gray-500);margin-top:6px">
+      Al usar este servicio aceptas nuestros
+      <a href="#terminos" style="color:var(--color-gray-400);text-decoration:underline">Términos de uso</a> y
+      <a href="#privacidad" style="color:var(--color-gray-400);text-decoration:underline">Política de privacidad</a>.
+      Los datos personales son usados exclusivamente para gestionar tu publicidad y no son compartidos con terceros.
+    </p>
+  </footer>
+
+  <!-- BANNER COOKIES / POLÍTICA -->
+  <div id="cookie-banner" style="
+    display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;
+    background:#1e293b;color:#e2e8f0;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;border-top:2px solid var(--color-primary);
+    font-size:0.85rem;">
+    <span>
+      🍪 Usamos almacenamiento local para mantener tu sesión activa. No usamos cookies de rastreo ni publicidad de terceros.
+      Al continuar navegando aceptas el uso de datos según nuestra
+      <a href="#privacidad" style="color:var(--color-accent);text-decoration:underline">Política de privacidad</a>.
+    </span>
+    <button id="btn-aceptar-cookies" style="
+      background:var(--color-primary);color:#fff;border:none;
+      padding:8px 20px;border-radius:6px;cursor:pointer;font-weight:600;white-space:nowrap">
+      Entendido ✓
+    </button>
+  </div>
+
+  <script type="module">
+    import { obtenerPlanes, obtenerConfiguracion } from './assets/js/supabase-data.js';
+    import { formatearSoles, escapeHtml } from './assets/js/utils.js';
+
+    // Actualizar WhatsApp desde configuración
+    async function cargarConfigLanding() {
+      const { data: config } = await obtenerConfiguracion();
+      if (config?.contacto_whatsapp) {
+        const numero = config.contacto_whatsapp.replace(/\D/g, '');
+        document.getElementById('link-whatsapp').href = `https://wa.me/${numero}`;
+      }
+    }
+    cargarConfigLanding();
+
+    // Banner de cookies
+    const cookieBanner = document.getElementById('cookie-banner');
+    const btnAceptar   = document.getElementById('btn-aceptar-cookies');
+    if (!localStorage.getItem('cookies_aceptadas')) {
+      cookieBanner.style.display = 'flex';
+    }
+    btnAceptar.addEventListener('click', () => {
+      localStorage.setItem('cookies_aceptadas', '1');
+      cookieBanner.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

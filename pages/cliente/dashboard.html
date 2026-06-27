@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Panel – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <!-- ── SIDEBAR ── -->
+    <aside class="app-sidebar" id="sidebar" aria-label="Menú lateral">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="ZV" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Panel Cliente</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav" aria-label="Navegación del panel">
+        <a href="dashboard.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          Mi Panel
+        </a>
+        <a href="mis-anuncios.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Mis Anuncios
+        </a>
+        <a href="recargar.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          Contratar Plan
+        </a>
+        <a href="historial.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Historial
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user" id="sidebar-user-btn">
+          <div class="sidebar-avatar" id="sidebar-avatar">?</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Cargando...</div>
+            <div class="sidebar-user-role">Cliente</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <!-- ── MAIN ── -->
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Mi Panel</h1>
+          <div class="breadcrumb-path">Inicio</div>
+        </div>
+        <div class="header-actions">
+          <a href="recargar.html" class="btn btn-primary btn-sm">+ Contratar plan</a>
+        </div>
+      </header>
+
+      <main class="app-content" id="main-content">
+        <!-- BANNER PLAN ACTIVO -->
+        <div id="banner-plan" class="alert alert-info" style="margin-bottom:var(--space-6)">
+          <span class="alert-icon">⏳</span>
+          <span>Cargando información de tu plan...</span>
+        </div>
+
+        <!-- STATS -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Plan activo</span>
+              <div class="stat-icon stat-icon-blue">📋</div>
+            </div>
+            <div class="stat-value" id="stat-plan">—</div>
+            <div class="stat-sub" id="stat-plan-vence">Sin plan activo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Anuncios subidos</span>
+              <div class="stat-icon stat-icon-orange">🖼️</div>
+            </div>
+            <div class="stat-value" id="stat-anuncios">0</div>
+            <div class="stat-sub">Archivos en tu cuenta</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Recargas</span>
+              <div class="stat-icon stat-icon-green">💳</div>
+            </div>
+            <div class="stat-value" id="stat-recargas">0</div>
+            <div class="stat-sub" id="stat-recargas-pendientes">Sin solicitudes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Estado</span>
+              <div class="stat-icon stat-icon-green">✅</div>
+            </div>
+            <div class="stat-value" style="font-size:var(--text-xl)" id="stat-estado">Activo</div>
+            <div class="stat-sub">Cuenta verificada</div>
+          </div>
+        </div>
+
+        <!-- ACCIONES RÁPIDAS -->
+        <div class="card" style="margin-top:var(--space-6)">
+          <div class="card-header">
+            <h3>Acciones rápidas</h3>
+          </div>
+          <div class="card-body">
+            <div class="grid-3" style="gap:var(--space-4)">
+              <a href="recargar.html" class="card" style="text-decoration:none;text-align:center;padding:var(--space-6);border:2px dashed var(--border-color);box-shadow:none;transition:all var(--transition-fast)" onmouseover="this.style.borderColor='var(--color-primary)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <div style="font-size:2.5rem;margin-bottom:var(--space-3)">💳</div>
+                <h4 style="font-size:var(--text-base)">Contratar plan</h4>
+                <p style="font-size:var(--text-sm);margin-top:var(--space-1)">Elige el plan ideal y sube tu voucher</p>
+              </a>
+              <a href="mis-anuncios.html" class="card" style="text-decoration:none;text-align:center;padding:var(--space-6);border:2px dashed var(--border-color);box-shadow:none;transition:all var(--transition-fast)" onmouseover="this.style.borderColor='var(--color-primary)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <div style="font-size:2.5rem;margin-bottom:var(--space-3)">📤</div>
+                <h4 style="font-size:var(--text-base)">Subir anuncio</h4>
+                <p style="font-size:var(--text-sm);margin-top:var(--space-1)">Carga tu foto o video para publicar</p>
+              </a>
+              <a href="historial.html" class="card" style="text-decoration:none;text-align:center;padding:var(--space-6);border:2px dashed var(--border-color);box-shadow:none;transition:all var(--transition-fast)" onmouseover="this.style.borderColor='var(--color-primary)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                <div style="font-size:2.5rem;margin-bottom:var(--space-3)">📋</div>
+                <h4 style="font-size:var(--text-base)">Ver historial</h4>
+                <p style="font-size:var(--text-sm);margin-top:var(--space-1)">Consulta tus pagos y contrataciones</p>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CÓMO FUNCIONA (primera vez) -->
+        <div class="card" style="margin-top:var(--space-6)" id="card-tutorial">
+          <div class="card-header">
+            <h3>📖 ¿Cómo publicar tu anuncio?</h3>
+            <button class="btn btn-ghost btn-sm" id="btn-ocultar-tutorial">Ocultar</button>
+          </div>
+          <div class="card-body">
+            <ol style="list-style:none;display:flex;flex-direction:column;gap:var(--space-4)">
+              <li style="display:flex;gap:var(--space-4);align-items:flex-start">
+                <span style="background:var(--color-primary);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;font-size:0.875rem">1</span>
+                <div>
+                  <strong>Elige un plan</strong>
+                  <p style="font-size:var(--text-sm);margin-top:2px">Ve a <a href="recargar.html">Contratar Plan</a>, selecciona el plan y las fechas que quieres.</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:var(--space-4);align-items:flex-start">
+                <span style="background:var(--color-primary);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;font-size:0.875rem">2</span>
+                <div>
+                  <strong>Haz el depósito</strong>
+                  <p style="font-size:var(--text-sm);margin-top:2px">Deposita el monto exacto en nuestra cuenta bancaria y sube la foto del voucher.</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:var(--space-4);align-items:flex-start">
+                <span style="background:var(--color-primary);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;font-size:0.875rem">3</span>
+                <div>
+                  <strong>Espera la validación</strong>
+                  <p style="font-size:var(--text-sm);margin-top:2px">Nuestro equipo revisará tu comprobante y activará tu plan (generalmente en pocas horas).</p>
+                </div>
+              </li>
+              <li style="display:flex;gap:var(--space-4);align-items:flex-start">
+                <span style="background:var(--color-success);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;flex-shrink:0;font-size:0.875rem">4</span>
+                <div>
+                  <strong>Sube tu anuncio y listo</strong>
+                  <p style="font-size:var(--text-sm);margin-top:2px">Con el plan activo, ve a <a href="mis-anuncios.html">Mis Anuncios</a> y carga tu foto o video. ¡Aparecerás en pantalla!</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel } from '../../assets/js/main.js';
+    import { contratacionActivaActual, misAnuncios, misRecargas } from '../../assets/js/supabase-data.js';
+    import { formatearFecha, diasRestantes, escapeHtml } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('cliente');
+    if (!perfil) throw new Error('No auth');
+
+    initPanel(perfil);
+
+    // Cargar datos del dashboard
+    const [{ data: contratacion }, { data: anuncios }, { count: totalRecargas, data: recargas }] = await Promise.all([
+      contratacionActivaActual(),
+      misAnuncios(),
+      misRecargas()
+    ]);
+
+    // Stat: Plan activo
+    if (contratacion) {
+      document.getElementById('stat-plan').textContent = contratacion.planes?.nombre || '—';
+      const dias = diasRestantes(contratacion.fecha_fin);
+      document.getElementById('stat-plan-vence').textContent = `Vence en ${dias} día${dias !== 1 ? 's' : ''} (${formatearFecha(contratacion.fecha_fin)})`;
+
+      document.getElementById('banner-plan').className = 'alert alert-success';
+      document.getElementById('banner-plan').innerHTML = `
+        <span class="alert-icon">✅</span>
+        <div>
+          <strong>Plan ${escapeHtml(contratacion.planes?.nombre)} activo</strong> —
+          Tu anuncio aparece en pantalla 1 vez por minuto.
+          Vence el ${formatearFecha(contratacion.fecha_fin)} (${dias} día${dias!==1?'s':''} restante${dias!==1?'s':''}).
+        </div>
+      `;
+    } else {
+      document.getElementById('stat-plan').textContent = 'Ninguno';
+      document.getElementById('stat-plan-vence').textContent = 'Sin plan activo';
+      document.getElementById('banner-plan').className = 'alert alert-warning';
+      document.getElementById('banner-plan').innerHTML = `
+        <span class="alert-icon">💡</span>
+        <div>
+          <strong>Aún no tienes un plan activo.</strong>
+          <a href="recargar.html" style="margin-left:8px" class="btn btn-sm btn-primary">Contratar plan</a>
+        </div>
+      `;
+    }
+
+    // Stat: Anuncios
+    document.getElementById('stat-anuncios').textContent = (anuncios || []).length;
+
+    // Stat: Recargas
+    document.getElementById('stat-recargas').textContent = totalRecargas || 0;
+    const pendientes = (recargas || []).filter(r => r.estado === 'pendiente').length;
+    if (pendientes > 0) {
+      document.getElementById('stat-recargas-pendientes').innerHTML = `<span style="color:var(--color-warning)">${pendientes} pendiente${pendientes>1?'s':''} de validar</span>`;
+    } else {
+      document.getElementById('stat-recargas-pendientes').textContent = totalRecargas > 0 ? 'Todas procesadas' : 'Sin solicitudes aún';
+    }
+
+    // Ocultar tutorial
+    const tutorial = document.getElementById('card-tutorial');
+    const ocultar = document.getElementById('btn-ocultar-tutorial');
+    if (localStorage.getItem('tutorial-oculto') === '1') tutorial.style.display = 'none';
+    ocultar?.addEventListener('click', () => {
+      tutorial.style.display = 'none';
+      localStorage.setItem('tutorial-oculto', '1');
+    });
+  </script>
+</body>
+</html>

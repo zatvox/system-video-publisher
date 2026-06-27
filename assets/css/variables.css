@@ -1,0 +1,153 @@
+/* ============================================================
+   VARIABLES.CSS - ZV Publicidad Digital
+   Sistema de diseño: tokens de color, tipografía y espaciado
+   ============================================================ */
+
+:root {
+  /* ── COLORES PRIMARIOS ── */
+  --color-primary:        #1B4FD8;   /* Azul corporativo */
+  --color-primary-dark:   #1338A8;   /* Azul oscuro (hover) */
+  --color-primary-light:  #3B7BFF;   /* Azul claro */
+  --color-primary-muted:  #DBEAFE;   /* Azul muy suave (fondos) */
+
+  /* ── ACENTO ── */
+  --color-accent:         #F97316;   /* Naranja energético */
+  --color-accent-dark:    #EA6C0A;   /* Naranja oscuro (hover) */
+  --color-accent-light:   #FED7AA;   /* Naranja suave (fondos) */
+
+  /* ── ESCALA DE GRISES ── */
+  --color-gray-50:        #F8FAFC;
+  --color-gray-100:       #F1F5F9;
+  --color-gray-200:       #E2E8F0;
+  --color-gray-300:       #CBD5E1;
+  --color-gray-400:       #94A3B8;
+  --color-gray-500:       #64748B;
+  --color-gray-600:       #475569;
+  --color-gray-700:       #334155;
+  --color-gray-800:       #1E293B;
+  --color-gray-900:       #0F172A;
+
+  /* ── SEMÁNTICOS ── */
+  --color-success:        #16A34A;
+  --color-success-light:  #DCFCE7;
+  --color-warning:        #D97706;
+  --color-warning-light:  #FEF3C7;
+  --color-danger:         #DC2626;
+  --color-danger-light:   #FEE2E2;
+  --color-info:           #0284C7;
+  --color-info-light:     #E0F2FE;
+
+  /* ── FONDO Y SUPERFICIE ── */
+  --bg-page:              #F8FAFC;
+  --bg-card:              #FFFFFF;
+  --bg-sidebar:           #0F172A;   /* Sidebar admin oscuro */
+  --bg-sidebar-item:      #1E293B;
+  --bg-input:             #FFFFFF;
+  --bg-overlay:           rgba(15, 23, 42, 0.6);
+
+  /* ── TEXTO ── */
+  --text-primary:         #1E293B;
+  --text-secondary:       #475569;
+  --text-muted:           #94A3B8;
+  --text-inverse:         #FFFFFF;
+  --text-link:            #1B4FD8;
+  --text-link-hover:      #1338A8;
+
+  /* ── BORDES ── */
+  --border-color:         #E2E8F0;
+  --border-color-dark:    #CBD5E1;
+  --border-radius-sm:     6px;
+  --border-radius:        10px;
+  --border-radius-lg:     16px;
+  --border-radius-xl:     24px;
+  --border-radius-full:   9999px;
+
+  /* ── SOMBRAS ── */
+  --shadow-sm:            0 1px 2px rgba(0,0,0,0.05);
+  --shadow:               0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:            0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --shadow-lg:            0 10px 15px rgba(0,0,0,0.08), 0 4px 6px rgba(0,0,0,0.05);
+  --shadow-xl:            0 20px 25px rgba(0,0,0,0.08), 0 10px 10px rgba(0,0,0,0.04);
+
+  /* ── TIPOGRAFÍA ── */
+  --font-sans:            'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:            'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
+  --text-xs:              0.75rem;    /* 12px */
+  --text-sm:              0.875rem;   /* 14px */
+  --text-base:            1rem;       /* 16px */
+  --text-lg:              1.125rem;   /* 18px */
+  --text-xl:              1.25rem;    /* 20px */
+  --text-2xl:             1.5rem;     /* 24px */
+  --text-3xl:             1.875rem;   /* 30px */
+  --text-4xl:             2.25rem;    /* 36px */
+  --text-5xl:             3rem;       /* 48px */
+
+  --font-normal:          400;
+  --font-medium:          500;
+  --font-semibold:        600;
+  --font-bold:            700;
+  --font-extrabold:       800;
+
+  --leading-tight:        1.25;
+  --leading-normal:       1.5;
+  --leading-relaxed:      1.625;
+
+  /* ── ESPACIADO ── */
+  --space-1:              0.25rem;    /* 4px */
+  --space-2:              0.5rem;     /* 8px */
+  --space-3:              0.75rem;    /* 12px */
+  --space-4:              1rem;       /* 16px */
+  --space-5:              1.25rem;    /* 20px */
+  --space-6:              1.5rem;     /* 24px */
+  --space-8:              2rem;       /* 32px */
+  --space-10:             2.5rem;     /* 40px */
+  --space-12:             3rem;       /* 48px */
+  --space-16:             4rem;       /* 64px */
+  --space-20:             5rem;       /* 80px */
+  --space-24:             6rem;       /* 96px */
+
+  /* ── LAYOUT ── */
+  --sidebar-width:        260px;
+  --header-height:        64px;
+  --container-max:        1200px;
+  --container-padding:    var(--space-6);
+
+  /* ── ANIMACIONES ── */
+  --transition-fast:      150ms ease;
+  --transition:           250ms ease;
+  --transition-slow:      400ms ease;
+
+  /* ── Z-INDEX ── */
+  --z-dropdown:           100;
+  --z-modal:              200;
+  --z-toast:              300;
+  --z-sidebar:            50;
+  --z-header:             40;
+}
+
+/* ── DARK MODE (TV Player y zonas oscuras) ── */
+[data-theme="dark"] {
+  --bg-page:              #0F172A;
+  --bg-card:              #1E293B;
+  --bg-input:             #1E293B;
+  --text-primary:         #F1F5F9;
+  --text-secondary:       #94A3B8;
+  --text-muted:           #64748B;
+  --border-color:         #334155;
+  --border-color-dark:    #475569;
+  --shadow:               0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-md:            0 4px 6px rgba(0,0,0,0.3);
+  --shadow-lg:            0 10px 15px rgba(0,0,0,0.4);
+}
+
+/* ── REDUCIR MOVIMIENTO (accesibilidad) ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pantallas TV – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Administración</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Principal</span>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="validaciones.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Validaciones
+          <span class="nav-badge" data-badge="validaciones" style="display:none">0</span>
+        </a>
+        <span class="sidebar-section-label">Gestión</span>
+        <a href="clientes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Clientes
+        </a>
+        <a href="planes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Planes y precios
+        </a>
+        <a href="pantallas.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pantallas TV
+        </a>
+        <a href="reportes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+          Reportes
+        </a>
+        <span class="sidebar-section-label">Links</span>
+        <a href="../../tv.html" target="_blank" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Ver carrusel TV
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrador</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Pantallas TV</h1>
+          <div class="breadcrumb-path">Admin › Pantallas</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" id="btn-nueva-pantalla">+ Registrar pantalla</button>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- Info URL carrusel -->
+        <div class="alert alert-info" style="margin-bottom:var(--space-6)">
+          <span class="alert-icon">📺</span>
+          <div>
+            <strong>URL del carrusel:</strong>
+            <code id="url-carrusel" style="margin:0 8px;background:var(--bg-secondary);padding:2px 8px;border-radius:4px">—</code>
+            <button class="btn btn-sm btn-ghost" id="btn-copiar-url">Copiar</button>
+            <p style="margin-top:4px;font-size:var(--text-sm)">
+              Para registrar una pantalla con nombre: <code>...tv.html?pantalla=NombrePantalla</code>.
+              El nombre aparecerá aquí con su último heartbeat.
+            </p>
+          </div>
+        </div>
+
+        <!-- Lista pantallas -->
+        <div class="card" style="margin-bottom:var(--space-6)">
+          <div class="card-header">
+            <h3>Pantallas registradas</h3>
+            <span class="badge badge-gray" id="total-pantallas">—</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Ubicación</th>
+                  <th>Último heartbeat</th>
+                  <th>Estado</th>
+                  <th>URL</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-pantallas">
+                <tr><td colspan="6" style="text-align:center;padding:40px"><div class="spinner" style="margin:0 auto 12px"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Instrucciones de setup -->
+        <div class="card">
+          <div class="card-header">
+            <h3>¿Cómo configurar una nueva pantalla?</h3>
+          </div>
+          <div class="card-body">
+            <div class="grid-2" style="gap:var(--space-6)">
+              <div>
+                <h4 style="margin-bottom:var(--space-3)">Opción 1 — Sin nombre (básico)</h4>
+                <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-3)">
+                  Abre el carrusel en el navegador del Smart TV. Todos los TVs muestran el mismo contenido de forma sincronizada.
+                </p>
+                <code style="background:var(--bg-secondary);padding:8px 12px;border-radius:6px;display:block;font-size:var(--text-sm)" id="url-basica">—</code>
+              </div>
+              <div>
+                <h4 style="margin-bottom:var(--space-3)">Opción 2 — Con nombre (trackeable)</h4>
+                <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-3)">
+                  Agrega <code>?pantalla=NOMBRE</code> para que el TV registre heartbeats y aparezca en esta lista.
+                </p>
+                <code style="background:var(--bg-secondary);padding:8px 12px;border-radius:6px;display:block;font-size:var(--text-sm)" id="url-con-nombre">—</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL NUEVA PANTALLA -->
+  <div id="modal-pantalla" class="modal-backdrop" style="display:none">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-pantalla-titulo">Registrar pantalla</h3>
+        <button class="modal-close" id="btn-cerrar-modal-pantalla" aria-label="Cerrar">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="form-pantalla" novalidate>
+          <input type="hidden" id="pantalla-id">
+          <div class="form-group">
+            <label class="form-label required" for="pantalla-nombre">Nombre identificador</label>
+            <input type="text" class="form-control" id="pantalla-nombre" placeholder="Ej: TV-Sala-Principal">
+            <span class="form-hint">Sin espacios. Se usará en la URL: ?pantalla=TV-Sala-Principal</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pantalla-ubicacion">Ubicación física</label>
+            <input type="text" class="form-control" id="pantalla-ubicacion" placeholder="Ej: Sala de espera, planta baja">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="pantalla-notas">Notas</label>
+            <textarea class="form-control" id="pantalla-notas" rows="2" placeholder="Información adicional..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btn-cerrar-modal-pantalla-2">Cancelar</button>
+        <button class="btn btn-primary" id="btn-guardar-pantalla">💾 Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel } from '../../assets/js/main.js';
+    import { supabase } from '../../assets/js/supabase-client.js';
+    import { formatearFechaHora, tiempoRelativo, escapeHtml, toast, copiarAlPortapapeles, confirmar } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('admin');
+    if (!perfil) throw new Error('No auth');
+    initPanel(perfil);
+
+    // URL base del carrusel
+    const baseUrl = window.location.origin + window.location.pathname.replace('/pages/admin/pantallas.html', '') + '/tv.html';
+    document.getElementById('url-carrusel').textContent = baseUrl;
+    document.getElementById('url-basica').textContent = baseUrl;
+    document.getElementById('url-con-nombre').textContent = baseUrl + '?pantalla=NOMBRE';
+
+    document.getElementById('btn-copiar-url').addEventListener('click', () => {
+      copiarAlPortapapeles(baseUrl);
+      toast.success('URL copiada al portapapeles');
+    });
+
+    // Cargar pantallas
+    async function cargarPantallas() {
+      const { data, error } = await supabase
+        .from('pantallas')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const tbody = document.getElementById('tbody-pantallas');
+      document.getElementById('total-pantallas').textContent = `${(data || []).length} pantallas`;
+
+      if (error || !data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:60px;color:var(--text-muted)">No hay pantallas registradas. Configura la primera TV con la URL del carrusel.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = data.map(p => {
+        const ultimoHb = p.ultimo_heartbeat ? new Date(p.ultimo_heartbeat) : null;
+        const ahora = new Date();
+        const minutosDesdeHb = ultimoHb ? Math.floor((ahora - ultimoHb) / 60000) : null;
+        const enLinea = minutosDesdeHb !== null && minutosDesdeHb < 10;
+
+        return `<tr>
+          <td><strong>${escapeHtml(p.nombre)}</strong></td>
+          <td style="font-size:var(--text-sm)">${escapeHtml(p.ubicacion || '—')}</td>
+          <td style="font-size:var(--text-sm)">
+            ${ultimoHb ? tiempoRelativo(p.ultimo_heartbeat) : '<span style="color:var(--text-muted)">Nunca</span>'}
+          </td>
+          <td>
+            <span class="badge ${enLinea ? 'badge-success' : (ultimoHb ? 'badge-warning' : 'badge-gray')}">
+              ${enLinea ? '● En línea' : (ultimoHb ? '⚠ Sin señal' : '○ Nunca conectado')}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-ghost" onclick="copiarUrl('${escapeHtml(p.nombre)}')">Copiar URL</button>
+          </td>
+          <td style="display:flex;gap:6px">
+            <button class="btn btn-sm btn-ghost" onclick="editarPantalla(${JSON.stringify(p).replace(/"/g, '&quot;')})">Editar</button>
+            <button class="btn btn-sm btn-danger" onclick="eliminarPantalla('${p.id}', '${escapeHtml(p.nombre)}')">Eliminar</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    window.copiarUrl = (nombre) => {
+      copiarAlPortapapeles(`${baseUrl}?pantalla=${nombre}`);
+      toast.success('URL copiada');
+    };
+
+    window.editarPantalla = (p) => {
+      document.getElementById('pantalla-id').value = p.id;
+      document.getElementById('pantalla-nombre').value = p.nombre;
+      document.getElementById('pantalla-ubicacion').value = p.ubicacion || '';
+      document.getElementById('pantalla-notas').value = p.notas || '';
+      document.getElementById('modal-pantalla-titulo').textContent = 'Editar pantalla';
+      document.getElementById('modal-pantalla').style.display = 'flex';
+    };
+
+    window.eliminarPantalla = async (id, nombre) => {
+      const ok = await confirmar({
+        titulo: 'Eliminar pantalla',
+        mensaje: `¿Eliminar la pantalla "${nombre}"? Los datos de heartbeat se perderán.`,
+        textoConfirmar: 'Eliminar',
+        tipoBtnConfirmar: 'danger'
+      });
+      if (!ok) return;
+      const { error } = await supabase.from('pantallas').delete().eq('id', id);
+      if (error) { toast.error('Error al eliminar'); return; }
+      toast.success('Pantalla eliminada');
+      cargarPantallas();
+    };
+
+    // Guardar pantalla
+    document.getElementById('btn-guardar-pantalla').addEventListener('click', async () => {
+      const id = document.getElementById('pantalla-id').value;
+      const nombre = document.getElementById('pantalla-nombre').value.trim().replace(/\s+/g, '-');
+      const ubicacion = document.getElementById('pantalla-ubicacion').value.trim();
+      const notas = document.getElementById('pantalla-notas').value.trim();
+
+      if (!nombre) { toast.error('El nombre es requerido'); return; }
+
+      const payload = { nombre, ubicacion, notas };
+      let error;
+
+      if (id) {
+        ({ error } = await supabase.from('pantallas').update(payload).eq('id', id));
+      } else {
+        ({ error } = await supabase.from('pantallas').insert(payload));
+      }
+
+      if (error) { toast.error(error.message || 'Error al guardar'); return; }
+      toast.success(id ? 'Pantalla actualizada' : 'Pantalla registrada');
+      document.getElementById('modal-pantalla').style.display = 'none';
+      cargarPantallas();
+    });
+
+    // Abrir modal nueva pantalla
+    document.getElementById('btn-nueva-pantalla').addEventListener('click', () => {
+      document.getElementById('pantalla-id').value = '';
+      document.getElementById('form-pantalla').reset();
+      document.getElementById('modal-pantalla-titulo').textContent = 'Registrar pantalla';
+      document.getElementById('modal-pantalla').style.display = 'flex';
+    });
+
+    // Cerrar modal
+    ['btn-cerrar-modal-pantalla', 'btn-cerrar-modal-pantalla-2'].forEach(id => {
+      document.getElementById(id).addEventListener('click', () => {
+        document.getElementById('modal-pantalla').style.display = 'none';
+      });
+    });
+
+    cargarPantallas();
+    // Auto-refresh cada 30s para el estado online
+    setInterval(cargarPantallas, 30000);
+  </script>
+</body>
+</html>

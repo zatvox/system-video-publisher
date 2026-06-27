@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Administración</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Principal</span>
+        <a href="dashboard.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="validaciones.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Validaciones
+          <span class="nav-badge" data-badge="validaciones" style="display:none">0</span>
+        </a>
+
+        <span class="sidebar-section-label">Gestión</span>
+        <a href="clientes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Clientes
+        </a>
+        <a href="planes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Planes y precios
+        </a>
+        <a href="pantallas.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pantallas TV
+        </a>
+        <a href="reportes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+          Reportes
+        </a>
+
+        <span class="sidebar-section-label">Links</span>
+        <a href="../../tv.html" target="_blank" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Ver carrusel TV
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrador</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Dashboard</h1>
+          <div class="breadcrumb-path">Administración</div>
+        </div>
+        <div class="header-actions">
+          <a href="validaciones.html" class="btn btn-primary btn-sm" id="btn-validaciones-pendientes" style="display:none">
+            ⚡ Validar pagos (<span id="count-pendientes">0</span>)
+          </a>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <!-- ALERTA SOBREVENTA -->
+        <div id="alerta-sobreventa" class="alert alert-danger" style="display:none;margin-bottom:var(--space-6)">
+          <span class="alert-icon">🚨</span>
+          <div>
+            <strong>¡Sobreventa de slots!</strong>
+            Hay más de 6 anuncios prioritarios activos simultáneamente. Algunos clientes podrían no estar recibiendo su frecuencia garantizada.
+            <a href="reportes.html" style="margin-left:8px" class="btn btn-sm btn-danger">Ver reporte</a>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Clientes activos</span>
+              <div class="stat-icon stat-icon-blue">👥</div>
+            </div>
+            <div class="stat-value" id="kpi-clientes">—</div>
+            <div class="stat-sub">Cuentas activas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Pagos pendientes</span>
+              <div class="stat-icon stat-icon-orange">⏳</div>
+            </div>
+            <div class="stat-value" id="kpi-pendientes" style="color:var(--color-warning)">—</div>
+            <div class="stat-sub">Esperando validación</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Slots en uso ahora</span>
+              <div class="stat-icon stat-icon-green">📺</div>
+            </div>
+            <div class="stat-value" id="kpi-slots">—</div>
+            <div class="stat-sub" id="kpi-slots-sub">de 6 slots disponibles</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-header">
+              <span class="stat-label">Ingresos este mes</span>
+              <div class="stat-icon stat-icon-green">💰</div>
+            </div>
+            <div class="stat-value" id="kpi-ingresos" style="font-size:var(--text-2xl)">—</div>
+            <div class="stat-sub">Vouchers aprobados</div>
+          </div>
+        </div>
+
+        <!-- OCUPACIÓN DE SLOTS -->
+        <div class="card" style="margin-top:var(--space-6)">
+          <div class="card-header">
+            <h3>Ocupación de slots ahora</h3>
+            <a href="reportes.html" class="btn btn-sm btn-ghost">Ver reporte completo →</a>
+          </div>
+          <div class="card-body">
+            <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4)">
+              El carrusel tiene 6 slots por vuelta (60 segundos). Los slots verdes están libres para nuevos clientes.
+            </p>
+            <div class="slots-grid" id="slots-visual" style="margin-bottom:var(--space-4)">
+              <!-- JS los rellena -->
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="slots-progress" style="width:0%"></div>
+            </div>
+            <p style="font-size:var(--text-sm);color:var(--text-muted);margin-top:var(--space-2)" id="slots-label">Calculando...</p>
+          </div>
+        </div>
+
+        <!-- ACCIONES RÁPIDAS ADMIN -->
+        <div class="grid-2" style="margin-top:var(--space-6);gap:var(--space-5)">
+          <div class="card">
+            <div class="card-header">
+              <h3>Acciones rápidas</h3>
+            </div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:var(--space-3)">
+              <a href="validaciones.html" class="btn btn-primary">✅ Revisar pagos pendientes</a>
+              <a href="clientes.html" class="btn btn-secondary">👥 Gestionar clientes</a>
+              <a href="planes.html" class="btn btn-secondary">💲 Editar precios</a>
+              <a href="../../tv.html" target="_blank" class="btn btn-ghost">📺 Ver carrusel en vivo</a>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Anuncios en pantalla ahora</h3>
+            </div>
+            <div class="card-body" id="anuncios-en-aire">
+              <div style="text-align:center;padding:var(--space-4);color:var(--text-muted)">
+                <div class="spinner" style="margin:0 auto 12px"></div>Cargando...
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    import { requireAuth } from '../../assets/js/auth.js';
+    import { initPanel, actualizarBadgeValidaciones } from '../../assets/js/main.js';
+    import { resumenAdminDashboard } from '../../assets/js/supabase-data.js';
+    import { supabase } from '../../assets/js/supabase-client.js';
+    import { formatearSoles, escapeHtml } from '../../assets/js/utils.js';
+
+    const perfil = await requireAuth('admin');
+    if (!perfil) throw new Error('No auth');
+    initPanel(perfil);
+
+    // Cargar métricas
+    const { data: res } = await resumenAdminDashboard();
+    if (res && res.ok) {
+      document.getElementById('kpi-clientes').textContent   = res.clientes_activos;
+      document.getElementById('kpi-pendientes').textContent = res.recargas_pendientes;
+      document.getElementById('kpi-ingresos').textContent   = formatearSoles(res.ingresos_mes_actual);
+
+      const slots = res.slots_ocupados_ahora;
+      const total = res.slots_totales;
+      document.getElementById('kpi-slots').textContent  = `${slots}/${total}`;
+      document.getElementById('kpi-slots-sub').textContent = `de ${total} slots disponibles`;
+
+      // Visual de slots
+      const slotsGrid = document.getElementById('slots-visual');
+      slotsGrid.innerHTML = Array.from({ length: total }).map((_, i) => `
+        <div class="slot-block ${i < slots ? (slots > total ? 'slot-sobreventa' : 'slot-ocupado') : 'slot-libre'}">
+          ${i < slots ? '●' : '○'}
+        </div>
+      `).join('');
+
+      const pct = Math.min(100, Math.round((slots / total) * 100));
+      const progressEl = document.getElementById('slots-progress');
+      progressEl.style.width = `${pct}%`;
+      progressEl.className = `progress-fill ${pct >= 100 ? 'danger' : pct >= 80 ? 'warning' : ''}`;
+      document.getElementById('slots-label').textContent = `${slots} de ${total} slots ocupados (${pct}%)`;
+
+      if (slots > total) {
+        document.getElementById('alerta-sobreventa').style.display = 'flex';
+      }
+
+      // Badge de pendientes
+      if (res.recargas_pendientes > 0) {
+        document.getElementById('btn-validaciones-pendientes').style.display = 'flex';
+        document.getElementById('count-pendientes').textContent = res.recargas_pendientes;
+        actualizarBadgeValidaciones(res.recargas_pendientes);
+      }
+    }
+
+    // Anuncios en aire
+    const { data: carrusel } = await supabase.from('vista_carrusel_actual').select('*');
+    const anunciosEl = document.getElementById('anuncios-en-aire');
+    if (!carrusel || carrusel.length === 0) {
+      anunciosEl.innerHTML = '<p style="color:var(--text-muted);text-align:center">No hay anuncios activos en este momento.</p>';
+    } else {
+      anunciosEl.innerHTML = carrusel.map(a => `
+        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--border-color)">
+          <span style="font-size:1.5rem">${a.tipo === 'video' ? '🎬' : '🖼️'}</span>
+          <div style="flex:1">
+            <div style="font-size:var(--text-sm);font-weight:600">${escapeHtml(a.plan_nombre)} · ${escapeHtml(a.plan_tipo)}</div>
+            <div style="font-size:var(--text-xs);color:var(--text-muted)">${a.tipo} · ${a.duracion_seg}s</div>
+          </div>
+          <span class="badge ${a.prioridad_garantizada ? 'badge-success' : 'badge-gray'}">
+            ${a.prioridad_garantizada ? 'Prioritario' : 'Básico'}
+          </span>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
