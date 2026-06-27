@@ -503,9 +503,18 @@ async function procesarRecorteConFfmpeg(duracionTotal) {
     if (progreso) progreso.textContent = 'Cargando procesador de video...';
     if (progressFill) progressFill.style.width = '10%';
 
-    // Cargar ffmpeg.wasm desde CDN
+    // Cargar ffmpeg.wasm como <script> normal (NO como ES module)
+    // Razón: import() dinámico impide que webpack detecte publicPath (document.currentScript es null en modules)
     if (!ffmpegLoaded) {
-      const { createFFmpeg, fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+      await new Promise((resolve, reject) => {
+        if (window.FFmpeg) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('No se pudo cargar ffmpeg.min.js'));
+        document.head.appendChild(s);
+      });
+      const { createFFmpeg } = window.FFmpeg;
       ffmpegInstance = createFFmpeg({
         log: false,
         corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
@@ -520,7 +529,7 @@ async function procesarRecorteConFfmpeg(duracionTotal) {
     if (progreso) progreso.textContent = 'Recortando video...';
     if (progressFill) progressFill.style.width = '20%';
 
-    const { fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js');
+    const { fetchFile } = window.FFmpeg;
 
     ffmpegInstance.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
 
