@@ -398,179 +398,431 @@ function mostrarArchivoListo(file, _trimInfo) {
 }
 
 // ═══════════════════════════════════════════════════════
-// EDITOR DE RECORTE DE VIDEO (ffmpeg.wasm - Opción A)
+// EDITOR DE RECORTE DE VIDEO — estilo online-video-cutter
+// Usa @ffmpeg/ffmpeg v0.12 + @ffmpeg/core v0.12.6 (single-thread)
+// No requiere SharedArrayBuffer ni headers COOP/COEP
 // ═══════════════════════════════════════════════════════
+
+function fmtTime(sec) {
+  const m = Math.floor(sec / 60).toString().padStart(2, '0');
+  const s = Math.floor(sec % 60).toString().padStart(2, '0');
+  return `${m}:${s}`;
+}
 
 function mostrarEditorRecorte(url, duracionTotal) {
   const editorContainer = document.getElementById('trim-editor');
   if (!editorContainer) return;
 
-  const duracionRecorte = CONFIG.TV.DURACION_ANUNCIO_SEG;
+  const DUR = CONFIG.TV.DURACION_ANUNCIO_SEG; // 10
   trimStart = 0;
 
   editorContainer.style.display = 'block';
   editorContainer.innerHTML = `
-    <div class="trim-editor">
-      <h4 style="color:white;margin-bottom:12px">✂️ Tu video dura más de ${duracionRecorte} segundos</h4>
-      <p style="color:var(--color-gray-400);font-size:0.875rem;margin-bottom:16px">
-        Selecciona el segmento de ${duracionRecorte} segundos que quieres publicar.
-      </p>
-
-      <div class="trim-preview">
-        <video id="trim-video" src="${url}" muted controls preload="auto"></video>
+    <div style="
+      background:#1a1a2e;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.1);
+    ">
+      <!-- Header -->
+      <div style="
+        background:#16213e;
+        padding:14px 20px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        border-bottom:1px solid rgba(255,255,255,0.08);
+      ">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:1.2rem">✂️</span>
+          <div>
+            <div style="color:#fff;font-weight:600;font-size:0.95rem">Recortar video</div>
+            <div style="color:#8899aa;font-size:0.78rem">Duración total: ${fmtTime(duracionTotal)} (${duracionTotal.toFixed(1)}s)</div>
+          </div>
+        </div>
+        <div style="
+          background:rgba(27,79,216,0.25);
+          border:1px solid rgba(27,79,216,0.5);
+          color:#7eb3ff;
+          padding:4px 12px;
+          border-radius:20px;
+          font-size:0.8rem;
+          font-weight:500;
+        ">Segmento: ${DUR} segundos</div>
       </div>
 
-      <div class="trim-info">
-        <span>Inicio: <strong id="trim-start-display">0:00</strong></span>
-        <span>Segmento: <strong>${duracionRecorte} segundos</strong></span>
-        <span>Duración total: <strong>${duracionTotal.toFixed(1)}s</strong></span>
+      <!-- Video player -->
+      <div style="background:#000;display:flex;justify-content:center;max-height:320px;overflow:hidden">
+        <video id="trim-video" src="${url}"
+          style="max-width:100%;max-height:320px;display:block"
+          preload="auto"
+        ></video>
       </div>
 
-      <label style="color:var(--color-gray-300);font-size:0.875rem;margin-bottom:6px;display:block">
-        Mueve el deslizador para elegir desde qué segundo empieza el recorte:
-      </label>
-      <input type="range" id="trim-slider"
-        min="0" max="${Math.max(0, duracionTotal - duracionRecorte).toFixed(1)}"
-        step="0.1" value="0"
-        style="width:100%;margin-bottom:16px;accent-color:var(--color-primary)"
-      >
-
-      <div id="trim-preview-info" class="trim-info" style="background:rgba(27,79,216,0.2);padding:12px;border-radius:8px;margin-bottom:16px">
-        <span style="color:white">Se publicará del segundo <strong id="trim-desde">0.0</strong> al <strong id="trim-hasta">${duracionRecorte}.0</strong></span>
+      <!-- Controles de reproducción -->
+      <div style="background:#111827;padding:10px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,0.06)">
+        <button id="trim-btn-play" style="
+          background:rgba(255,255,255,0.1);
+          border:none;color:#fff;
+          width:36px;height:36px;
+          border-radius:50%;
+          cursor:pointer;font-size:1rem;
+          display:flex;align-items:center;justify-content:center;
+          transition:background .15s;
+        ">▶</button>
+        <div style="flex:1;position:relative;height:4px;background:rgba(255,255,255,0.15);border-radius:2px;cursor:pointer" id="trim-progreso-video">
+          <div id="trim-progreso-fill" style="height:100%;background:#1b4fd8;border-radius:2px;width:0%;pointer-events:none"></div>
+          <div id="trim-progreso-thumb" style="
+            position:absolute;top:50%;transform:translate(-50%,-50%);
+            width:12px;height:12px;border-radius:50%;
+            background:#fff;left:0%;pointer-events:none;
+          "></div>
+        </div>
+        <span id="trim-tiempo-actual" style="color:#8899aa;font-size:0.8rem;min-width:50px;text-align:right">00:00</span>
       </div>
 
-      <div class="trim-actions">
-        <button id="btn-preview-recorte" class="btn btn-secondary" style="background:transparent;color:white;border-color:white">
-          ▶ Previsualizar recorte
+      <!-- Timeline de recorte -->
+      <div style="padding:20px">
+        <div style="color:#8899aa;font-size:0.8rem;margin-bottom:8px;display:flex;justify-content:space-between">
+          <span>0:00</span>
+          <span style="color:#cdd6f4;font-weight:500">Arrastra el bloque azul para elegir el segmento</span>
+          <span>${fmtTime(duracionTotal)}</span>
+        </div>
+
+        <!-- Barra timeline -->
+        <div id="trim-timeline" style="
+          position:relative;
+          height:56px;
+          background:#0f172a;
+          border-radius:8px;
+          cursor:pointer;
+          user-select:none;
+          overflow:hidden;
+          border:1px solid rgba(255,255,255,0.08);
+        ">
+          <!-- Fondo de waveform simulado -->
+          <div id="trim-waveform" style="
+            position:absolute;inset:0;
+            display:flex;align-items:center;
+            padding:0 2px;gap:1px;opacity:0.3;
+          "></div>
+
+          <!-- Bloque de selección -->
+          <div id="trim-handle" style="
+            position:absolute;top:0;bottom:0;
+            background:rgba(27,79,216,0.45);
+            border:2px solid #1b4fd8;
+            border-radius:4px;
+            cursor:grab;
+            left:0%;
+            width:${(DUR / duracionTotal * 100).toFixed(2)}%;
+            box-sizing:border-box;
+            display:flex;align-items:center;justify-content:center;
+            transition:background .1s;
+          ">
+            <div style="
+              background:rgba(255,255,255,0.15);
+              border-radius:3px;
+              padding:2px 6px;
+              font-size:0.7rem;
+              color:#fff;
+              white-space:nowrap;
+              pointer-events:none;
+            " id="trim-handle-label">${fmtTime(0)} → ${fmtTime(DUR)}</div>
+          </div>
+
+          <!-- Línea de posición actual del video -->
+          <div id="trim-pos-line" style="
+            position:absolute;top:0;bottom:0;
+            width:2px;background:#facc15;
+            pointer-events:none;left:0%;
+          "></div>
+        </div>
+
+        <!-- Tiempos del segmento -->
+        <div style="
+          display:flex;justify-content:space-between;
+          margin-top:10px;
+          background:rgba(27,79,216,0.15);
+          border:1px solid rgba(27,79,216,0.3);
+          border-radius:8px;
+          padding:10px 16px;
+        ">
+          <div style="text-align:center">
+            <div style="color:#8899aa;font-size:0.72rem;margin-bottom:2px">INICIO DEL CORTE</div>
+            <div style="color:#7eb3ff;font-weight:700;font-size:1.1rem" id="trim-label-desde">${fmtTime(0)}</div>
+            <div style="color:#8899aa;font-size:0.72rem" id="trim-seg-desde">0.0s</div>
+          </div>
+          <div style="text-align:center;border-left:1px solid rgba(255,255,255,0.1);border-right:1px solid rgba(255,255,255,0.1);padding:0 20px">
+            <div style="color:#8899aa;font-size:0.72rem;margin-bottom:2px">DURACIÓN</div>
+            <div style="color:#fff;font-weight:700;font-size:1.1rem">${DUR}s</div>
+            <div style="color:#8899aa;font-size:0.72rem">fijo</div>
+          </div>
+          <div style="text-align:center">
+            <div style="color:#8899aa;font-size:0.72rem;margin-bottom:2px">FIN DEL CORTE</div>
+            <div style="color:#7eb3ff;font-weight:700;font-size:1.1rem" id="trim-label-hasta">${fmtTime(DUR)}</div>
+            <div style="color:#8899aa;font-size:0.72rem" id="trim-seg-hasta">${DUR.toFixed(1)}s</div>
+          </div>
+        </div>
+
+        <!-- Info mensaje -->
+        <div id="trim-info-msg" style="
+          margin-top:10px;
+          color:#94a3b8;
+          font-size:0.82rem;
+          text-align:center;
+        ">
+          Se publicará del segundo <strong style="color:#7eb3ff" id="trim-msg-desde">0.0</strong>
+          al <strong style="color:#7eb3ff" id="trim-msg-hasta">${DUR.toFixed(1)}</strong>
+          de tu video de ${duracionTotal.toFixed(1)}s
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div style="
+        padding:16px 20px;
+        background:#111827;
+        display:flex;gap:12px;justify-content:flex-end;
+        border-top:1px solid rgba(255,255,255,0.06);
+      ">
+        <button id="btn-preview-recorte" class="btn" style="
+          background:transparent;color:#e2e8f0;
+          border:1px solid rgba(255,255,255,0.25);
+          display:flex;align-items:center;gap:6px;
+        ">
+          <span id="trim-preview-icon">▶</span> Vista previa del recorte
         </button>
-        <button id="btn-confirmar-recorte" class="btn btn-primary">
+        <button id="btn-confirmar-recorte" class="btn btn-primary" style="display:flex;align-items:center;gap:6px;">
           ✂️ Confirmar y guardar
         </button>
       </div>
 
-      <div id="trim-procesando" style="display:none;margin-top:12px">
-        <div style="display:flex;align-items:center;gap:12px;color:white">
+      <!-- Procesando overlay -->
+      <div id="trim-procesando" style="display:none;padding:16px 20px;background:#111827;border-top:1px solid rgba(255,255,255,0.06)">
+        <div style="display:flex;align-items:center;gap:12px;color:#e2e8f0;margin-bottom:10px">
           <div class="spinner spinner-sm"></div>
-          <span id="trim-progreso">Procesando video... Por favor espera.</span>
+          <span id="trim-progreso-texto">Preparando procesador de video...</span>
         </div>
-        <div class="progress-bar" style="margin-top:8px">
-          <div class="progress-fill" id="trim-progress-fill" style="width:0%"></div>
+        <div style="background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden;height:6px">
+          <div id="trim-progress-fill" style="height:100%;background:#1b4fd8;width:0%;transition:width .3s"></div>
         </div>
       </div>
     </div>
   `;
 
-  const slider = document.getElementById('trim-slider');
-  const video = document.getElementById('trim-video');
-  const startDisplay = document.getElementById('trim-start-display');
-  const desdeEl = document.getElementById('trim-desde');
-  const hastaEl = document.getElementById('trim-hasta');
+  // ── Waveform decorativo ──────────────────────────────
+  const waveEl = document.getElementById('trim-waveform');
+  for (let i = 0; i < 80; i++) {
+    const bar = document.createElement('div');
+    const h = 20 + Math.random() * 60;
+    bar.style.cssText = `flex:1;background:rgba(255,255,255,0.6);border-radius:1px;height:${h}%`;
+    waveEl.appendChild(bar);
+  }
 
-  slider.addEventListener('input', () => {
-    trimStart = parseFloat(slider.value);
-    const m = Math.floor(trimStart / 60).toString().padStart(2, '0');
-    const s = Math.floor(trimStart % 60).toString().padStart(2, '0');
-    startDisplay.textContent = `${m}:${s}`;
-    desdeEl.textContent = trimStart.toFixed(1);
-    hastaEl.textContent = (trimStart + duracionRecorte).toFixed(1);
+  // ── Referencias DOM ──────────────────────────────────
+  const video       = document.getElementById('trim-video');
+  const timeline    = document.getElementById('trim-timeline');
+  const handle      = document.getElementById('trim-handle');
+  const handleLabel = document.getElementById('trim-handle-label');
+  const posLine     = document.getElementById('trim-pos-line');
+  const labelDesde  = document.getElementById('trim-label-desde');
+  const labelHasta  = document.getElementById('trim-label-hasta');
+  const segDesde    = document.getElementById('trim-seg-desde');
+  const segHasta    = document.getElementById('trim-seg-hasta');
+  const msgDesde    = document.getElementById('trim-msg-desde');
+  const msgHasta    = document.getElementById('trim-msg-hasta');
+  const btnPlay     = document.getElementById('trim-btn-play');
+  const progresoBar = document.getElementById('trim-progreso-fill');
+  const progresoThumb = document.getElementById('trim-progreso-thumb');
+  const tiempoEl   = document.getElementById('trim-tiempo-actual');
+  const progresoVideo = document.getElementById('trim-progreso-video');
+
+  const handleWidthPct = (DUR / duracionTotal) * 100;
+
+  function actualizarUI() {
+    const leftPct = (trimStart / duracionTotal) * 100;
+    handle.style.left = `${leftPct}%`;
+    handleLabel.textContent = `${fmtTime(trimStart)} → ${fmtTime(trimStart + DUR)}`;
+    labelDesde.textContent = fmtTime(trimStart);
+    labelHasta.textContent = fmtTime(trimStart + DUR);
+    segDesde.textContent   = `${trimStart.toFixed(1)}s`;
+    segHasta.textContent   = `${(trimStart + DUR).toFixed(1)}s`;
+    msgDesde.textContent   = trimStart.toFixed(1);
+    msgHasta.textContent   = (trimStart + DUR).toFixed(1);
+  }
+
+  // ── Drag del bloque de selección ─────────────────────
+  let dragging = false;
+  let dragOffsetX = 0;
+
+  function startDrag(clientX) {
+    dragging = true;
+    const rect = timeline.getBoundingClientRect();
+    const handleLeft = (trimStart / duracionTotal) * rect.width;
+    dragOffsetX = clientX - rect.left - handleLeft;
+    handle.style.cursor = 'grabbing';
+  }
+
+  function moveDrag(clientX) {
+    if (!dragging) return;
+    const rect = timeline.getBoundingClientRect();
+    const x = clientX - rect.left - dragOffsetX;
+    const maxX = rect.width * (1 - handleWidthPct / 100);
+    const clampedX = Math.max(0, Math.min(x, maxX));
+    trimStart = (clampedX / rect.width) * duracionTotal;
+    trimStart = Math.max(0, Math.min(trimStart, duracionTotal - DUR));
+    actualizarUI();
+    if (video && !video.paused) { /* no interrumpir reproducción */ }
+    else if (video) video.currentTime = trimStart;
+  }
+
+  function endDrag() {
+    dragging = false;
+    handle.style.cursor = 'grab';
+  }
+
+  handle.addEventListener('mousedown',  e => { e.preventDefault(); startDrag(e.clientX); });
+  document.addEventListener('mousemove', e => moveDrag(e.clientX));
+  document.addEventListener('mouseup',   endDrag);
+  handle.addEventListener('touchstart',  e => { e.preventDefault(); startDrag(e.touches[0].clientX); }, { passive: false });
+  document.addEventListener('touchmove',  e => { if (dragging) { e.preventDefault(); moveDrag(e.touches[0].clientX); } }, { passive: false });
+  document.addEventListener('touchend',   endDrag);
+
+  // Click directo en el timeline (fuera del handle)
+  timeline.addEventListener('click', e => {
+    if (e.target === handle || handle.contains(e.target)) return;
+    const rect = timeline.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    trimStart = Math.max(0, Math.min((x / rect.width) * duracionTotal, duracionTotal - DUR));
+    actualizarUI();
     if (video) video.currentTime = trimStart;
   });
 
-  document.getElementById('btn-preview-recorte')?.addEventListener('click', () => {
-    if (!video) return;
-    video.currentTime = trimStart;
-    video.play();
-    setTimeout(() => video.pause(), duracionRecorte * 1000);
+  // ── Controles de video ───────────────────────────────
+  video.addEventListener('timeupdate', () => {
+    const pct = (video.currentTime / duracionTotal) * 100;
+    if (progresoBar) progresoBar.style.width = `${pct}%`;
+    if (progresoThumb) progresoThumb.style.left = `${pct}%`;
+    if (tiempoEl) tiempoEl.textContent = fmtTime(video.currentTime);
+    if (posLine) posLine.style.left = `${pct}%`;
   });
 
+  btnPlay?.addEventListener('click', () => {
+    if (video.paused) { video.play(); btnPlay.textContent = '⏸'; }
+    else              { video.pause(); btnPlay.textContent = '▶'; }
+  });
+  video.addEventListener('pause', () => { if (btnPlay) btnPlay.textContent = '▶'; });
+  video.addEventListener('play',  () => { if (btnPlay) btnPlay.textContent = '⏸'; });
+
+  progresoVideo?.addEventListener('click', e => {
+    const rect = progresoVideo.getBoundingClientRect();
+    video.currentTime = ((e.clientX - rect.left) / rect.width) * duracionTotal;
+  });
+
+  // ── Vista previa del recorte ─────────────────────────
+  let previewTimeout = null;
+  document.getElementById('btn-preview-recorte')?.addEventListener('click', () => {
+    if (previewTimeout) clearTimeout(previewTimeout);
+    video.currentTime = trimStart;
+    video.play();
+    btnPlay.textContent = '⏸';
+    previewTimeout = setTimeout(() => { video.pause(); }, DUR * 1000);
+  });
+
+  // ── Confirmar ────────────────────────────────────────
   document.getElementById('btn-confirmar-recorte')?.addEventListener('click', () => {
-    procesarRecorteConFfmpeg(duracionTotal);
+    if (previewTimeout) clearTimeout(previewTimeout);
+    video.pause();
+    procesarRecorteConFfmpeg();
   });
 }
 
-async function procesarRecorteConFfmpeg(duracionTotal) {
-  const btnConfirmar = document.getElementById('btn-confirmar-recorte');
-  const btnPreview = document.getElementById('btn-preview-recorte');
-  const procesando = document.getElementById('trim-procesando');
-  const progreso = document.getElementById('trim-progreso');
-  const progressFill = document.getElementById('trim-progress-fill');
+async function procesarRecorteConFfmpeg() {
+  const btnConfirmar  = document.getElementById('btn-confirmar-recorte');
+  const btnPreview    = document.getElementById('btn-preview-recorte');
+  const procesando    = document.getElementById('trim-procesando');
+  const progresoTexto = document.getElementById('trim-progreso-texto');
+  const progressFill  = document.getElementById('trim-progress-fill');
 
   if (btnConfirmar) btnConfirmar.disabled = true;
-  if (btnPreview) btnPreview.disabled = true;
-  if (procesando) procesando.style.display = 'block';
+  if (btnPreview)   btnPreview.disabled = true;
+  if (procesando)   procesando.style.display = 'block';
+
+  const setProgreso = (pct, txt) => {
+    if (progressFill)  progressFill.style.width = `${pct}%`;
+    if (progresoTexto) progresoTexto.textContent = txt;
+  };
 
   try {
-    if (progreso) progreso.textContent = 'Cargando procesador de video...';
-    if (progressFill) progressFill.style.width = '10%';
+    setProgreso(5, 'Cargando procesador de video (primera vez puede tardar ~10s)...');
 
-    // Cargar ffmpeg.wasm como <script> normal (NO como ES module)
-    // Razón: import() dinámico impide que webpack detecte publicPath (document.currentScript es null en modules)
+    // ── Cargar @ffmpeg/ffmpeg v0.12 + @ffmpeg/core v0.12.6 (single-thread)
+    // toBlobURL convierte URLs externas a blob: del mismo origen → no necesita SharedArrayBuffer
+    // IMPORTANTE: usar @ffmpeg/core (sin -mt) → no requiere SharedArrayBuffer ni headers COOP/COEP
     if (!ffmpegLoaded) {
-      await new Promise((resolve, reject) => {
-        if (window.FFmpeg) { resolve(); return; }
-        const s = document.createElement('script');
-        s.src = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.6/dist/ffmpeg.min.js';
-        s.onload = resolve;
-        s.onerror = () => reject(new Error('No se pudo cargar ffmpeg.min.js'));
-        document.head.appendChild(s);
+      const { FFmpeg }          = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+      const { toBlobURL, fetchFile: ff } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+      ffmpegInstance = new FFmpeg();
+
+      ffmpegInstance.on('progress', ({ progress }) => {
+        setProgreso(20 + Math.round(progress * 70), `Recortando... ${Math.round(progress * 100)}%`);
       });
-      const { createFFmpeg } = window.FFmpeg;
-      ffmpegInstance = createFFmpeg({
-        log: false,
-        corePath: 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js',
-        progress: ({ ratio }) => {
-          if (progressFill) progressFill.style.width = `${Math.min(90, 10 + ratio * 80)}%`;
-        }
+
+      // Single-thread core → funciona en GitHub Pages sin headers especiales
+      const base = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+      setProgreso(10, 'Descargando núcleo de ffmpeg...');
+      await ffmpegInstance.load({
+        coreURL: await toBlobURL(`${base}/ffmpeg-core.js`,   'text/javascript'),
+        wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
       });
-      await ffmpegInstance.load();
+
+      // Guardamos fetchFile en el scope de la instancia para reutilizar
+      ffmpegInstance._fetchFile = ff;
       ffmpegLoaded = true;
     }
 
-    if (progreso) progreso.textContent = 'Recortando video...';
-    if (progressFill) progressFill.style.width = '20%';
+    setProgreso(20, 'Leyendo archivo de video...');
 
-    const { fetchFile } = window.FFmpeg;
+    const fetchFile = ffmpegInstance._fetchFile;
+    const DUR = CONFIG.TV.DURACION_ANUNCIO_SEG;
 
-    ffmpegInstance.FS('writeFile', 'input.mp4', await fetchFile(videoFile));
+    await ffmpegInstance.writeFile('input.mp4', await fetchFile(videoFile));
 
-    const duracion = CONFIG.TV.DURACION_ANUNCIO_SEG;
-    await ffmpegInstance.run(
-      '-ss', trimStart.toFixed(2),
-      '-i', 'input.mp4',
-      '-t', String(duracion),
-      '-c:v', 'libx264',
-      '-crf', '23',
-      '-preset', 'fast',
-      '-an',  // Sin audio
+    setProgreso(25, 'Recortando...');
+
+    // -c copy = sin recodificación → casi instantáneo y no requiere mucha CPU
+    await ffmpegInstance.exec([
+      '-ss', trimStart.toFixed(3),
+      '-i',  'input.mp4',
+      '-t',  String(DUR),
+      '-c',  'copy',
       '-movflags', '+faststart',
       'output.mp4'
-    );
+    ]);
 
-    if (progressFill) progressFill.style.width = '95%';
-    if (progreso) progreso.textContent = 'Preparando archivo...';
+    setProgreso(92, 'Preparando archivo...');
 
-    const outputData = ffmpegInstance.FS('readFile', 'output.mp4');
-    const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
-    videoFile = new File([blob], `recortado_${Date.now()}.mp4`, { type: 'video/mp4' });
+    const data = await ffmpegInstance.readFile('output.mp4');
+    const blob = new Blob([data.buffer], { type: 'video/mp4' });
+    videoFile  = new File([blob], `recortado_${Date.now()}.mp4`, { type: 'video/mp4' });
 
-    // Limpiar memoria de ffmpeg
-    ffmpegInstance.FS('unlink', 'input.mp4');
-    ffmpegInstance.FS('unlink', 'output.mp4');
+    await ffmpegInstance.deleteFile('input.mp4');
+    await ffmpegInstance.deleteFile('output.mp4');
 
-    if (progressFill) progressFill.style.width = '100%';
+    setProgreso(100, '¡Listo!');
 
-    // Ocultar editor y mostrar archivo listo
     const editorContainer = document.getElementById('trim-editor');
     if (editorContainer) editorContainer.style.display = 'none';
     mostrarArchivoListo(videoFile, null);
-    toast.success('Video recortado correctamente. Ya puedes subirlo.');
+    toast.success('✂️ Video recortado correctamente. Ya puedes subirlo.');
 
   } catch (err) {
     console.error('[Trim]', err);
-    toast.error('Error al procesar el video. Intenta con la Opción B (tiempo real).');
-    if (btnConfirmar) btnConfirmar.disabled = false;
-    if (btnPreview) btnPreview.disabled = false;
-    if (procesando) procesando.style.display = 'none';
+    toast.error('Error al recortar el video. Intenta de nuevo o usa una imagen.');
+    if (btnConfirmar) { btnConfirmar.disabled = false; }
+    if (btnPreview)   { btnPreview.disabled = false; }
+    if (procesando)   { procesando.style.display = 'none'; }
   }
 }
 

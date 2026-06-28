@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recortar Video – ZV Publicidad Digital</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <style>
+    /* ── Reset mínimo ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-family: var(--font-sans,'Inter',sans-serif); font-size: 16px; }
+    body { background: #0d1117; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: inherit;
+    }
+    .topbar-logo-icon { font-size: 1.4rem; }
+    .topbar-logo-text { font-size: 1rem; font-weight: 600; color: #f0f6ff; }
+    .topbar-back {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; color: #8b949e;
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      transition: all .15s;
+    }
+    .topbar-back:hover { color: #f0f6ff; border-color: #58a6ff; }
+
+    /* ── Main area ── */
+    .main { flex: 1; display: flex; flex-direction: column; padding: 24px; gap: 20px; max-width: 960px; margin: 0 auto; width: 100%; }
+
+    /* ── Upload zone (estado inicial) ── */
+    #upload-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 24px;
+    }
+    .upload-zone {
+      border: 2px dashed #30363d;
+      border-radius: 16px;
+      padding: 60px 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      width: 100%;
+      max-width: 560px;
+      background: #161b22;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: #1b4fd8;
+      background: rgba(27,79,216,0.06);
+    }
+    .upload-zone-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .upload-zone h2 { font-size: 1.25rem; color: #f0f6ff; margin-bottom: 8px; font-weight: 600; }
+    .upload-zone p { font-size: 0.875rem; color: #8b949e; line-height: 1.6; }
+    .upload-zone p strong { color: #58a6ff; }
+    .upload-zone input { display: none; }
+    .upload-btn {
+      margin-top: 20px;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #1b4fd8; color: white;
+      border: none; padding: 12px 28px;
+      border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; transition: background .15s;
+    }
+    .upload-btn:hover { background: #1338a8; }
+
+    /* ── Editor area ── */
+    #editor-section { display: none; flex-direction: column; gap: 16px; }
+
+    /* ── Video player ── */
+    .player-wrap {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      max-height: 400px;
+      border: 1px solid #21262d;
+    }
+    #editor-video {
+      max-width: 100%; max-height: 400px;
+      display: block;
+    }
+
+    /* ── Player controls bar ── */
+    .player-controls {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .ctrl-btn {
+      background: rgba(255,255,255,0.08);
+      border: none; color: #e2e8f0;
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      cursor: pointer; font-size: 1rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .15s; flex-shrink: 0;
+    }
+    .ctrl-btn:hover { background: rgba(255,255,255,0.16); }
+    .ctrl-btn.active { background: #1b4fd8; }
+
+    .seek-bar-wrap {
+      flex: 1; position: relative;
+      height: 4px; background: rgba(255,255,255,0.12);
+      border-radius: 2px; cursor: pointer;
+    }
+    .seek-bar-fill {
+      height: 100%; background: #1b4fd8;
+      border-radius: 2px; pointer-events: none;
+      width: 0%;
+    }
+    .seek-bar-thumb {
+      position: absolute; top: 50%;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
+      border-radius: 50%; background: #fff;
+      pointer-events: none; left: 0%;
+      transition: transform .1s;
+    }
+    .seek-bar-wrap:hover .seek-bar-thumb { transform: translate(-50%, -50%) scale(1.3); }
+
+    .time-display {
+      font-size: 0.8rem; color: #8b949e;
+      font-variant-numeric: tabular-nums;
+      min-width: 90px; text-align: right;
+    }
+
+    .volume-wrap {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .vol-btn {
+      background: none; border: none;
+      color: #8b949e; cursor: pointer;
+      font-size: 1rem; line-height: 1;
+      transition: color .15s;
+    }
+    .vol-btn:hover { color: #e2e8f0; }
+
+    /* ── Timeline ── */
+    .timeline-section {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .timeline-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .timeline-title {
+      font-size: 0.8rem; font-weight: 600;
+      color: #8b949e; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .timeline-pill {
+      background: rgba(27,79,216,0.2);
+      border: 1px solid rgba(27,79,216,0.4);
+      color: #7eb3ff;
+      font-size: 0.75rem; font-weight: 600;
+      padding: 3px 10px; border-radius: 12px;
+    }
+
+    .timeline-times {
+      display: flex; justify-content: space-between;
+      font-size: 0.72rem; color: #8b949e;
+      margin-bottom: 6px;
+    }
+
+    /* Barra de timeline */
+    #timeline-bar {
+      position: relative;
+      height: 64px;
+      background: #0d1117;
+      border-radius: 8px;
+      cursor: pointer;
+      user-select: none;
+      overflow: hidden;
+      border: 1px solid #30363d;
+    }
+
+    /* Waveform simulado */
+    #waveform {
+      position: absolute; inset: 0;
+      display: flex; align-items: center;
+      padding: 0 2px; gap: 1px;
+      opacity: 0.25;
+    }
+
+    /* Selector de segmento */
+    #segment-handle {
+      position: absolute; top: 0; bottom: 0;
+      background: rgba(27,79,216,0.35);
+      border: 2px solid #1b4fd8;
+      border-radius: 4px;
+      cursor: grab;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .1s;
+      z-index: 2;
+    }
+    #segment-handle:active { cursor: grabbing; background: rgba(27,79,216,0.5); }
+
+    /* Handles laterales (orejas) */
+    .seg-ear {
+      position: absolute; top: 0; bottom: 0; width: 10px;
+      background: #1b4fd8;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .seg-ear-left { left: 0; border-radius: 2px 0 0 2px; cursor: ew-resize; }
+    .seg-ear-right { right: 0; border-radius: 0 2px 2px 0; cursor: ew-resize; }
+    .seg-ear::after { content: '⋮'; color: rgba(255,255,255,0.6); font-size: 0.75rem; }
+
+    .seg-label {
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px; padding: 2px 8px;
+      font-size: 0.72rem; color: #fff;
+      pointer-events: none; white-space: nowrap;
+      text-align: center;
+    }
+
+    /* Zonas oscurecidas fuera del segmento */
+    #shade-left, #shade-right {
+      position: absolute; top: 0; bottom: 0;
+      background: rgba(0,0,0,0.55);
+      pointer-events: none; z-index: 1;
+    }
+    #shade-left { left: 0; }
+    #shade-right { right: 0; }
+
+    /* Línea de posición actual */
+    #playhead {
+      position: absolute; top: 0; bottom: 0;
+      width: 2px; background: #fbbf24;
+      pointer-events: none; z-index: 3; left: 0%;
+    }
+    #playhead::before {
+      content: '';
+      position: absolute; top: -1px; left: -4px;
+      border: 5px solid transparent;
+      border-top-color: #fbbf24;
+    }
+
+    /* ── Info del segmento ── */
+    .segment-info {
+      display: flex; gap: 0;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .seg-info-cell {
+      flex: 1; padding: 12px 16px;
+      text-align: center;
+      border-right: 1px solid #21262d;
+    }
+    .seg-info-cell:last-child { border-right: none; }
+    .seg-info-label {
+      font-size: 0.68rem; font-weight: 600;
+      color: #8b949e; text-transform: uppercase;
+      letter-spacing: 0.06em; margin-bottom: 4px;
+    }
+    .seg-info-val {
+      font-size: 1.1rem; font-weight: 700;
+      color: #7eb3ff;
+    }
+    .seg-info-val.fixed { color: #e2e8f0; }
+    .seg-info-sub {
+      font-size: 0.7rem; color: #8b949e; margin-top: 2px;
+    }
+
+    /* ── Mensaje de información ── */
+    .info-msg {
+      background: rgba(27,79,216,0.1);
+      border: 1px solid rgba(27,79,216,0.25);
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 0.82rem; color: #94a3b8;
+      text-align: center;
+    }
+    .info-msg span { color: #7eb3ff; font-weight: 600; }
+
+    /* ── Barra de acciones ── */
+    .action-bar {
+      display: flex; gap: 12px; justify-content: flex-end;
+      align-items: center;
+    }
+    .action-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s;
+    }
+    .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline {
+      background: transparent; color: #e2e8f0;
+      border: 1px solid #30363d;
+    }
+    .btn-outline:hover:not(:disabled) { border-color: #8b949e; }
+    .btn-confirm {
+      background: #1b4fd8; color: white;
+      border: 1px solid transparent;
+    }
+    .btn-confirm:hover:not(:disabled) { background: #1338a8; }
+    .btn-confirm.processing { background: #374151; }
+
+    /* ── Progress bar ── */
+    .progress-section {
+      display: none;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .progress-top {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 12px;
+    }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.15);
+      border-top-color: #1b4fd8;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-text { font-size: 0.875rem; color: #e2e8f0; }
+    .progress-track {
+      height: 6px; background: rgba(255,255,255,0.08);
+      border-radius: 3px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: #1b4fd8;
+      border-radius: 3px; width: 0%;
+      transition: width .3s ease;
+    }
+
+    /* ── Resultado ── */
+    #result-section {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      padding: 32px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      text-align: center;
+    }
+    #result-section .check { font-size: 3rem; }
+    #result-section h3 { font-size: 1.2rem; font-weight: 700; color: #f0f6ff; }
+    #result-section p { font-size: 0.875rem; color: #8b949e; }
+    .result-actions { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .result-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; border: none; transition: all .15s;
+      text-decoration: none;
+    }
+    .result-btn-primary { background: #1b4fd8; color: white; }
+    .result-btn-primary:hover { background: #1338a8; }
+    .result-btn-ghost { background: transparent; color: #e2e8f0; border: 1px solid #30363d; }
+    .result-btn-ghost:hover { border-color: #8b949e; }
+
+    /* ── Mobile ── */
+    @media (max-width: 640px) {
+      .main { padding: 12px; gap: 12px; }
+      .player-controls { flex-wrap: wrap; }
+      .action-bar { flex-direction: column; }
+      .action-btn { width: 100%; justify-content: center; }
+      .seg-info-cell { padding: 10px 8px; }
+      .seg-info-val { font-size: 0.95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<nav class="topbar">
+  <a href="../../index.html" class="topbar-logo">
+    <span class="topbar-logo-icon">📺</span>
+    <span class="topbar-logo-text">ZV Publicidad</span>
+  </a>
+  <a href="mis-anuncios.html" class="topbar-back">
+    ← Volver a Mis Anuncios
+  </a>
+</nav>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════
+       SECCIÓN UPLOAD (estado inicial)
+  ══════════════════════════════════ -->
+  <div id="upload-section">
+    <div style="text-align:center;margin-bottom:8px">
+      <div style="font-size:2rem;margin-bottom:8px">✂️</div>
+      <h1 style="font-size:1.5rem;font-weight:700;color:#f0f6ff;margin-bottom:6px">Editor de recorte de video</h1>
+      <p style="color:#8b949e;font-size:0.9rem">Selecciona un video MP4 para recortarlo a los 10 segundos que quieres publicar</p>
+    </div>
+
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="file-input" accept="video/mp4,video/webm,video/quicktime">
+      <div class="upload-zone-icon">🎬</div>
+      <h2>Arrastra tu video aquí</h2>
+      <p>o haz click para seleccionar<br><strong>MP4, WebM o MOV</strong> · máx. 100 MB</p>
+      <button class="upload-btn" type="button">
+        📂 Seleccionar video
+      </button>
+    </div>
+
+    <p style="font-size:0.78rem;color:#6b7280;text-align:center">
+      El video se procesa completamente en tu navegador — no se sube a ningún servidor hasta que confirmes.
+    </p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SECCIÓN EDITOR
+  ══════════════════════════════════ -->
+  <div id="editor-section">
+
+    <!-- Player -->
+    <div class="player-wrap">
+      <video id="editor-video" preload="auto"></video>
+    </div>
+
+    <!-- Controles de reproducción -->
+    <div class="player-controls">
+      <button class="ctrl-btn" id="btn-play" title="Play / Pausa">▶</button>
+
+      <div class="seek-bar-wrap" id="seek-bar">
+        <div class="seek-bar-fill" id="seek-fill"></div>
+        <div class="seek-bar-thumb" id="seek-thumb"></div>
+      </div>
+
+      <div class="time-display" id="time-display">0:00 / 0:00</div>
+
+      <div class="volume-wrap">
+        <button class="vol-btn" id="btn-mute" title="Silenciar">🔊</button>
+        <input type="range" id="vol-slider" min="0" max="1" step="0.05" value="0.8"
+          style="width:70px;accent-color:#1b4fd8;cursor:pointer">
+      </div>
+    </div>
+
+    <!-- Timeline de recorte -->
+    <div class="timeline-section">
+      <div class="timeline-header">
+        <span class="timeline-title">Selecciona el segmento de 10 segundos</span>
+        <span class="timeline-pill" id="timeline-pill">10 seg de 0:00</span>
+      </div>
+
+      <div class="timeline-times">
+        <span>0:00</span>
+        <span style="color:#8b949e;font-size:0.72rem" id="timeline-hint">
+          Arrastra el bloque azul para mover el segmento
+        </span>
+        <span id="timeline-total">0:00</span>
+      </div>
+
+      <div id="timeline-bar">
+        <!-- Waveform decorativo -->
+        <div id="waveform"></div>
+
+        <!-- Zonas oscurecidas -->
+        <div id="shade-left"></div>
+        <div id="shade-right"></div>
+
+        <!-- Playhead -->
+        <div id="playhead"></div>
+
+        <!-- Bloque de segmento seleccionado -->
+        <div id="segment-handle">
+          <div class="seg-ear seg-ear-left"></div>
+          <div class="seg-label" id="seg-label">0:00 → 0:10</div>
+          <div class="seg-ear seg-ear-right"></div>
+        </div>
+      </div>
+
+      <!-- Valores del segmento -->
+      <div class="segment-info">
+        <div class="seg-info-cell">
+          <div class="seg-info-label">Inicio del corte</div>
+          <div class="seg-info-val" id="info-desde">0:00</div>
+          <div class="seg-info-sub" id="info-desde-seg">0.0 seg</div>
+        </div>
+        <div class="seg-info-cell">
+          <div class="seg-info-label">Duración</div>
+          <div class="seg-info-val fixed">10 seg</div>
+          <div class="seg-info-sub">fijo</div>
+        </div>
+        <div class="seg-info-cell">
+          <div class="seg-info-label">Fin del corte</div>
+          <div class="seg-info-val" id="info-hasta">0:10</div>
+          <div class="seg-info-sub" id="info-hasta-seg">10.0 seg</div>
+        </div>
+      </div>
+
+      <!-- Info mensaje -->
+      <div class="info-msg" id="info-msg" style="margin-top:10px">
+        Se publicará del segundo <span id="msg-desde">0.0</span>
+        al <span id="msg-hasta">10.0</span>
+        de tu video de <span id="msg-total">—</span>
+      </div>
+    </div>
+
+    <!-- Progress bar (oculta mientras no procesa) -->
+    <div class="progress-section" id="progress-section">
+      <div class="progress-top">
+        <div class="spinner"></div>
+        <div class="progress-text" id="progress-text">Preparando procesador de video...</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="action-bar">
+      <button class="action-btn btn-outline" id="btn-preview">▶ Vista previa del recorte</button>
+      <button class="action-btn btn-confirm" id="btn-confirm">✂️ Confirmar recorte</button>
+    </div>
+
+  </div><!-- /#editor-section -->
+
+  <!-- ══════════════════════════════════
+       RESULTADO
+  ══════════════════════════════════ -->
+  <div id="result-section">
+    <div class="check">✅</div>
+    <h3>¡Video recortado!</h3>
+    <p>El video fue recortado correctamente a 10 segundos.</p>
+    <div class="result-actions">
+      <a id="btn-download" href="#" download="recortado.mp4" class="result-btn result-btn-primary">
+        ⬇️ Descargar video recortado
+      </a>
+      <button class="result-btn result-btn-ghost" id="btn-nuevo">
+        🔄 Recortar otro video
+      </button>
+    </div>
+    <p style="font-size:0.75rem;color:#6b7280;margin-top:8px">
+      Para subirlo como anuncio, usa la sección <a href="mis-anuncios.html" style="color:#7eb3ff">Mis Anuncios</a>.
+    </p>
+  </div>
+
+</div><!-- /.main -->
+
+<script type="module">
+// ================================================================
+// VIDEO EDITOR — ZV Publicidad Digital
+// Editor de recorte al estilo online-video-cutter.com
+// FFmpeg single-thread (@ffmpeg/core) — funciona en GitHub Pages
+// ================================================================
+
+const DUR_SEG = 10; // duración fija del segmento en segundos
+const MAX_MB  = 100;
+
+let videoFile     = null;
+let videoUrl      = null;
+let duracionTotal = 0;
+let trimStart     = 0;
+let previewTimer  = null;
+let ffmpegLoaded  = false;
+let ffmpegInst    = null;
+let fetchFileFn   = null;
+let resultBlob    = null;
+
+// ── DOM refs ──────────────────────────────────────────────────
+const uploadSection   = document.getElementById('upload-section');
+const editorSection   = document.getElementById('editor-section');
+const resultSection   = document.getElementById('result-section');
+const uploadZone      = document.getElementById('upload-zone');
+const fileInput       = document.getElementById('file-input');
+const video           = document.getElementById('editor-video');
+const btnPlay         = document.getElementById('btn-play');
+const seekBar         = document.getElementById('seek-bar');
+const seekFill        = document.getElementById('seek-fill');
+const seekThumb       = document.getElementById('seek-thumb');
+const timeDisplay     = document.getElementById('time-display');
+const btnMute         = document.getElementById('btn-mute');
+const volSlider       = document.getElementById('vol-slider');
+const timelineBar     = document.getElementById('timeline-bar');
+const waveformEl      = document.getElementById('waveform');
+const shadeLeft       = document.getElementById('shade-left');
+const shadeRight      = document.getElementById('shade-right');
+const playhead        = document.getElementById('playhead');
+const segHandle       = document.getElementById('segment-handle');
+const segLabel        = document.getElementById('seg-label');
+const infoDesde       = document.getElementById('info-desde');
+const infoHasta       = document.getElementById('info-hasta');
+const infoDesde$      = document.getElementById('info-desde-seg');
+const infoHasta$      = document.getElementById('info-hasta-seg');
+const msgDesde        = document.getElementById('msg-desde');
+const msgHasta        = document.getElementById('msg-hasta');
+const msgTotal        = document.getElementById('msg-total');
+const timelinePill    = document.getElementById('timeline-pill');
+const timelineTotal   = document.getElementById('timeline-total');
+const btnPreview      = document.getElementById('btn-preview');
+const btnConfirm      = document.getElementById('btn-confirm');
+const progressSection = document.getElementById('progress-section');
+const progressText    = document.getElementById('progress-text');
+const progressFill    = document.getElementById('progress-fill');
+const btnDownload     = document.getElementById('btn-download');
+const btnNuevo        = document.getElementById('btn-nuevo');
+
+// ── Helpers ───────────────────────────────────────────────────
+function fmt(s) {
+  const m = Math.floor(s / 60).toString().padStart(2, '0');
+  const sec = Math.floor(s % 60).toString().padStart(2, '0');
+  return `${m}:${sec}`;
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(v, hi)); }
+
+// ── Waveform decorativo ───────────────────────────────────────
+function buildWaveform() {
+  waveformEl.innerHTML = '';
+  for (let i = 0; i < 100; i++) {
+    const bar = document.createElement('div');
+    const h = 15 + Math.random() * 70;
+    bar.style.cssText = `flex:1;background:rgba(255,255,255,0.55);border-radius:1px;height:${h}%`;
+    waveformEl.appendChild(bar);
+  }
+}
+
+// ── Actualizar UI del timeline ────────────────────────────────
+function refreshTimeline() {
+  if (!duracionTotal) return;
+  const leftPct  = (trimStart / duracionTotal) * 100;
+  const widthPct = (DUR_SEG  / duracionTotal) * 100;
+  const end = trimStart + DUR_SEG;
+
+  segHandle.style.left  = `${leftPct}%`;
+  segHandle.style.width = `${widthPct}%`;
+  segLabel.textContent  = `${fmt(trimStart)} → ${fmt(end)}`;
+
+  shadeLeft.style.width = `${leftPct}%`;
+  shadeRight.style.left = `${leftPct + widthPct}%`;
+  shadeRight.style.width = `${100 - leftPct - widthPct}%`;
+
+  infoDesde.textContent = fmt(trimStart);
+  infoHasta.textContent = fmt(end);
+  infoDesde$.textContent = `${trimStart.toFixed(1)} seg`;
+  infoHasta$.textContent = `${end.toFixed(1)} seg`;
+  msgDesde.textContent  = trimStart.toFixed(1);
+  msgHasta.textContent  = end.toFixed(1);
+  timelinePill.textContent = `${DUR_SEG} seg de ${fmt(duracionTotal)}`;
+}
+
+// ── Drag del segmento ─────────────────────────────────────────
+let dragging = false;
+let dragOffsetX = 0;
+
+function startDrag(cx) {
+  dragging = true;
+  const rect = timelineBar.getBoundingClientRect();
+  const handleLeft = (trimStart / duracionTotal) * rect.width;
+  dragOffsetX = cx - rect.left - handleLeft;
+  segHandle.style.cursor = 'grabbing';
+  document.body.style.userSelect = 'none';
+}
+
+function doDrag(cx) {
+  if (!dragging) return;
+  const rect  = timelineBar.getBoundingClientRect();
+  const x     = cx - rect.left - dragOffsetX;
+  const maxX  = rect.width * (1 - DUR_SEG / duracionTotal);
+  trimStart   = clamp((x / rect.width) * duracionTotal, 0, duracionTotal - DUR_SEG);
+  refreshTimeline();
+  // Mover video a la posición mientras no reproduce
+  if (video.paused) video.currentTime = trimStart;
+}
+
+function endDrag() {
+  if (!dragging) return;
+  dragging = false;
+  segHandle.style.cursor = 'grab';
+  document.body.style.userSelect = '';
+}
+
+segHandle.addEventListener('mousedown', e => { e.preventDefault(); startDrag(e.clientX); });
+document.addEventListener('mousemove', e => doDrag(e.clientX));
+document.addEventListener('mouseup', endDrag);
+segHandle.addEventListener('touchstart', e => { e.preventDefault(); startDrag(e.touches[0].clientX); }, { passive: false });
+document.addEventListener('touchmove', e => { if (dragging) { e.preventDefault(); doDrag(e.touches[0].clientX); } }, { passive: false });
+document.addEventListener('touchend', endDrag);
+
+// Click fuera del handle → saltar al punto
+timelineBar.addEventListener('click', e => {
+  if (segHandle.contains(e.target)) return;
+  const rect = timelineBar.getBoundingClientRect();
+  const clickTime = ((e.clientX - rect.left) / rect.width) * duracionTotal;
+  trimStart = clamp(clickTime - DUR_SEG / 2, 0, duracionTotal - DUR_SEG);
+  refreshTimeline();
+  if (video.paused) video.currentTime = trimStart;
+});
+
+// ── Controles de video ────────────────────────────────────────
+function togglePlay() {
+  if (video.paused) {
+    video.play();
+    btnPlay.textContent = '⏸';
+  } else {
+    video.pause();
+    btnPlay.textContent = '▶';
+  }
+}
+
+btnPlay.addEventListener('click', togglePlay);
+video.addEventListener('pause',   () => { btnPlay.textContent = '▶'; });
+video.addEventListener('play',    () => { btnPlay.textContent = '⏸'; });
+
+video.addEventListener('timeupdate', () => {
+  if (!duracionTotal) return;
+  const pct = (video.currentTime / duracionTotal) * 100;
+  seekFill.style.width   = `${pct}%`;
+  seekThumb.style.left   = `${pct}%`;
+  playhead.style.left    = `${pct}%`;
+  timeDisplay.textContent = `${fmt(video.currentTime)} / ${fmt(duracionTotal)}`;
+});
+
+// Click en seekbar
+seekBar.addEventListener('click', e => {
+  const rect = seekBar.getBoundingClientRect();
+  video.currentTime = ((e.clientX - rect.left) / rect.width) * duracionTotal;
+});
+
+// Volumen
+volSlider.addEventListener('input', () => { video.volume = volSlider.value; });
+btnMute.addEventListener('click', () => {
+  video.muted = !video.muted;
+  btnMute.textContent = video.muted ? '🔇' : '🔊';
+});
+
+// ── Vista previa del recorte ──────────────────────────────────
+btnPreview.addEventListener('click', () => {
+  if (previewTimer) clearTimeout(previewTimer);
+  video.currentTime = trimStart;
+  video.play();
+  btnPlay.textContent = '⏸';
+  btnPreview.textContent = '⏹ Detener';
+  previewTimer = setTimeout(() => {
+    video.pause();
+    btnPreview.textContent = '▶ Vista previa del recorte';
+  }, DUR_SEG * 1000);
+});
+
+// ── Upload / Cargar video ─────────────────────────────────────
+function loadFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('video/')) {
+    alert('Solo se aceptan archivos de video (MP4, WebM, MOV).');
+    return;
+  }
+  if (file.size > MAX_MB * 1024 * 1024) {
+    alert(`El archivo supera el límite de ${MAX_MB} MB.`);
+    return;
+  }
+
+  videoFile = file;
+  if (videoUrl) URL.revokeObjectURL(videoUrl);
+  videoUrl = URL.createObjectURL(file);
+  video.src = videoUrl;
+
+  video.onloadedmetadata = () => {
+    duracionTotal = video.duration;
+
+    if (duracionTotal <= DUR_SEG) {
+      // Video ya es ≤ 10 segundos — no necesita recorte
+      alert(`Este video ya dura ${duracionTotal.toFixed(1)} segundos (≤ ${DUR_SEG}s). No necesita recorte — puedes subirlo directo.`);
+      resetTodo();
+      return;
+    }
+
+    trimStart = 0;
+    buildWaveform();
+
+    timelineTotal.textContent = fmt(duracionTotal);
+    msgTotal.textContent = `${duracionTotal.toFixed(1)}s`;
+
+    refreshTimeline();
+    video.volume = parseFloat(volSlider.value);
+
+    uploadSection.style.display = 'none';
+    editorSection.style.display = 'flex';
+    resultSection.style.display = 'none';
+  };
+}
+
+uploadZone.addEventListener('click', e => {
+  if (e.target.tagName !== 'BUTTON' && !uploadZone.contains(e.target)) return;
+  fileInput.click();
+});
+uploadZone.querySelector('.upload-btn').addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => { if (fileInput.files[0]) loadFile(fileInput.files[0]); });
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+
+// ── Cargar FFmpeg ─────────────────────────────────────────────
+async function cargarFFmpeg(onProgress) {
+  if (ffmpegLoaded) return;
+
+  // @ffmpeg/ffmpeg + @ffmpeg/util via jsdelivr
+  const { FFmpeg }     = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+  const { toBlobURL, fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+  ffmpegInst = new FFmpeg();
+  ffmpegInst.on('progress', ({ progress }) => onProgress && onProgress(progress));
+
+  // Single-thread core (no requiere SharedArrayBuffer ni GitHub Pages headers)
+  const base = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+  await ffmpegInst.load({
+    coreURL: await toBlobURL(`${base}/ffmpeg-core.js`,   'text/javascript'),
+    wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
+  });
+
+  fetchFileFn  = fetchFile;
+  ffmpegLoaded = true;
+}
+
+// ── Confirmar recorte → FFmpeg ────────────────────────────────
+btnConfirm.addEventListener('click', async () => {
+  if (!videoFile) return;
+  if (previewTimer) clearTimeout(previewTimer);
+  video.pause();
+
+  btnConfirm.disabled = true;
+  btnPreview.disabled = true;
+  btnConfirm.textContent = '⏳ Procesando...';
+  btnConfirm.classList.add('processing');
+  progressSection.style.display = 'block';
+
+  const setP = (pct, txt) => {
+    progressFill.style.width = `${pct}%`;
+    progressText.textContent = txt;
+  };
+
+  try {
+    setP(5, 'Cargando procesador de video (primera vez ~10 seg)...');
+
+    await cargarFFmpeg(progress => {
+      setP(20 + Math.round(progress * 65), `Recortando... ${Math.round(progress * 100)}%`);
+    });
+
+    setP(18, 'Leyendo archivo de video...');
+    await ffmpegInst.writeFile('input.mp4', await fetchFileFn(videoFile));
+
+    setP(22, 'Aplicando recorte...');
+
+    // -ss antes de -i = fast seek + -c copy = sin recodificar → casi instantáneo
+    await ffmpegInst.exec([
+      '-ss', trimStart.toFixed(3),
+      '-i',  'input.mp4',
+      '-t',  String(DUR_SEG),
+      '-c',  'copy',
+      '-movflags', '+faststart',
+      '-avoid_negative_ts', 'make_zero',
+      'output.mp4'
+    ]);
+
+    setP(90, 'Preparando archivo resultante...');
+
+    const data = await ffmpegInst.readFile('output.mp4');
+    resultBlob = new Blob([data.buffer], { type: 'video/mp4' });
+
+    await ffmpegInst.deleteFile('input.mp4').catch(() => {});
+    await ffmpegInst.deleteFile('output.mp4').catch(() => {});
+
+    setP(100, '¡Listo!');
+
+    // Mostrar resultado
+    const resultUrl = URL.createObjectURL(resultBlob);
+    btnDownload.href = resultUrl;
+    btnDownload.download = `recortado_${Date.now()}.mp4`;
+
+    // Guardar en sessionStorage para que mis-anuncios pueda recuperarlo
+    // (solo el metadata — el blob se almacena en memoria de esta página)
+    sessionStorage.setItem('video_recortado_listo', '1');
+    sessionStorage.setItem('video_recortado_nombre', `recortado_${Date.now()}.mp4`);
+
+    progressSection.style.display = 'none';
+    editorSection.style.display = 'none';
+    resultSection.style.display = 'flex';
+
+  } catch (err) {
+    console.error('[Editor] Error FFmpeg:', err);
+    setP(0, '');
+    progressSection.style.display = 'none';
+    btnConfirm.disabled = false;
+    btnPreview.disabled = false;
+    btnConfirm.textContent = '✂️ Confirmar recorte';
+    btnConfirm.classList.remove('processing');
+    alert('Ocurrió un error al procesar el video. Intenta de nuevo.\nDetalle: ' + err.message);
+  }
+});
+
+// ── Reset ─────────────────────────────────────────────────────
+function resetTodo() {
+  videoFile     = null;
+  duracionTotal = 0;
+  trimStart     = 0;
+  resultBlob    = null;
+  if (videoUrl) { URL.revokeObjectURL(videoUrl); videoUrl = null; }
+  video.src = '';
+  fileInput.value = '';
+  btnConfirm.disabled = false;
+  btnPreview.disabled = false;
+  btnConfirm.textContent = '✂️ Confirmar recorte';
+  btnConfirm.classList.remove('processing');
+  progressSection.style.display = 'none';
+  uploadSection.style.display = 'flex';
+  editorSection.style.display = 'none';
+  resultSection.style.display = 'none';
+}
+
+btnNuevo.addEventListener('click', resetTodo);
+</script>
+</body>
+</html>
