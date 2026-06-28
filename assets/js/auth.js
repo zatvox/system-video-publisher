@@ -15,7 +15,7 @@ import { CONFIG } from './config.js';
  */
 function getRootPath() {
   const path = window.location.pathname;
-  if (path.includes('/pages/admin/')) return '../../';
+  if (path.includes('/pages/admin/') || path.includes('/pages/cliente/')) return '../../';
   if (path.includes('/pages/')) return '../';
   return './';
 }
