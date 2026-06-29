@@ -7,7 +7,7 @@ Sistema de carrusel publicitario digital para Smart TVs. Los clientes contratan 
 - **Frontend:** HTML5 + CSS3 modular + JavaScript ES6 Modules (sin frameworks)
 - **Backend:** [Supabase](https://supabase.com) — PostgreSQL, Auth, Storage, RLS, Realtime
 - **Hosting:** GitHub Pages (estático)
-- **Procesamiento de video:** ffmpeg.wasm (browser-side, sin servidor)
+- **Procesamiento de video:** ffmpeg.wasm (browser-side, single-thread, sin servidor ni headers especiales)
 
 ## Estructura del proyecto
 
@@ -51,7 +51,10 @@ Sistema de carrusel publicitario digital para Smart TVs. Los clientes contratan 
 │   │   ├── cliente-anuncios.js   # Subida + trim de video (ffmpeg.wasm)
 │   │   ├── cliente-recargas.js   # Flujo de contratación y pago
 │   │   ├── admin-validaciones.js # Aprobación/rechazo de vouchers (Realtime)
-│   │   └── admin-planes.js       # CRUD planes y configuración negocio
+│   │   ├── admin-planes.js       # CRUD planes y configuración negocio
+│   │   └── ffmpeg/               # FFmpeg.wasm UMD local (evita cross-origin Worker)
+│   │       ├── ffmpeg.js         # Bundle principal UMD (@ffmpeg/ffmpeg@0.12.10)
+│   │       └── 814.ffmpeg.js     # Chunk del Worker (webpack, cargado automáticamente)
 │   ├── images/
 │   │   └── logo.png              # Logo de la empresa
 │   └── sql/

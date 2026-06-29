@@ -183,38 +183,69 @@ function programarReintento(ms) {
 /**
  * Construye la cola de slots para la vuelta actual.
  *
- * Algoritmo determinístico:
- *   vueltaIndex = floor(timestamp_unix_en_minutos) % ceil(prioritarios / 6)
- *   Esto garantiza que TODAS las TVs físicas muestren lo mismo
- *   sin depender de estado local por TV.
+ * Algoritmo determinístico (todas las TVs muestran lo mismo):
+ *   - minutoActual = floor(unix_ms / 60000)
+ *   - Cada contratacion_id = 1 slot; si el plan mensual tiene 2 anuncios activos,
+ *     se alterna cuál muestra en esta vuelta: ads[minutoActual % 2]
+ *   - Slots libres se llenan con anuncios del admin (rotativos)
+ *   - Si hay > 6 contrataciones prioritarias activas, se rotan en grupos por vuelta
  */
 function construirNuevaCola() {
-  const prioritarios = state.anuncios.filter(a => a.prioridad_garantizada);
-  const basicos      = state.anuncios.filter(a => !a.prioridad_garantizada);
-
-  const numGrupos = Math.max(1, Math.ceil(prioritarios.length / state.slots));
   const minutoActual = Math.floor(Date.now() / 1000 / 60);
-  const vueltaIndex = minutoActual % numGrupos;
 
-  // Seleccionar grupo de prioritarios para esta vuelta
-  const inicio = vueltaIndex * state.slots;
-  const grupo = prioritarios.slice(inicio, inicio + state.slots);
+  // ── Separar anuncios admin de los de clientes ──────────────
+  const adminAds  = state.anuncios.filter(a => a.es_admin);
+  const clientAds = state.anuncios.filter(a => !a.es_admin);
 
-  // Rellenar huecos con básicos (rotativamente)
-  const huecos = state.slots - grupo.length;
-  if (huecos > 0 && basicos.length > 0) {
-    const basicosGrupoIndex = Math.floor(Date.now() / 1000 / 60 / numGrupos) % Math.max(1, Math.ceil(basicos.length / huecos));
-    const basicosInicio = basicosGrupoIndex * huecos;
-    const basicosSlice = basicos.slice(basicosInicio, basicosInicio + huecos);
-    grupo.push(...basicosSlice);
+  // ── Agrupar anuncios de clientes por contratacion_id ───────
+  // Cada contratación = 1 slot; para plan mensual con 2 activos, rotamos
+  const byContratacion = {};
+  for (const ad of clientAds) {
+    const cid = ad.contratacion_id;
+    if (!byContratacion[cid]) byContratacion[cid] = [];
+    byContratacion[cid].push(ad);
   }
 
-  // Si no hay anuncios en el grupo, usar todos los disponibles
-  state.colaActual = grupo.length > 0 ? grupo : state.anuncios.slice(0, state.slots);
+  // ── Resolver qué anuncio muestra cada contratación este minuto ─
+  const slotsCliente = Object.values(byContratacion).map(ads => {
+    if (ads.length === 1) return ads[0];
+    // 2 activos (plan mensual): alternar por minuto
+    return ads[minutoActual % ads.length];
+  });
+
+  // ── Separar prioritarios (planes con slot garantizado) y básicos ─
+  const prioritarios = slotsCliente.filter(a => a.prioridad_garantizada);
+  const basicos      = slotsCliente.filter(a => !a.prioridad_garantizada);
+
+  // ── Si hay más prioritarios que slots, rotar grupos ────────
+  const numGrupos   = Math.max(1, Math.ceil(prioritarios.length / state.slots));
+  const vueltaIndex = minutoActual % numGrupos;
+  const inicio      = vueltaIndex * state.slots;
+  const grupo       = prioritarios.slice(inicio, inicio + state.slots);
+
+  // ── Llenar huecos: primero básicos, luego anuncios del admin ─
+  let huecosRestantes = state.slots - grupo.length;
+
+  if (huecosRestantes > 0 && basicos.length > 0) {
+    grupo.push(...basicos.slice(0, huecosRestantes));
+    huecosRestantes = state.slots - grupo.length;
+  }
+
+  if (huecosRestantes > 0 && adminAds.length > 0) {
+    for (let i = 0; i < huecosRestantes; i++) {
+      grupo.push(adminAds[(minutoActual + i) % adminAds.length]);
+    }
+  }
+
+  state.colaActual   = grupo.length > 0 ? grupo : state.anuncios.slice(0, state.slots);
   state.indiceActual = 0;
   state.vueltas++;
 
-  console.log(`[TV] Cola vuelta #${state.vueltas}: ${state.colaActual.length} anuncios (${prioritarios.length} prioritarios, ${basicos.length} básicos)`);
+  console.log(
+    `[TV] Cola vuelta #${state.vueltas}: ${grupo.length} slots` +
+    ` (${prioritarios.length} prioritarios, ${basicos.length} básicos,` +
+    ` ${adminAds.length} admin disponibles, ${huecosRestantes <= 0 ? 0 : huecosRestantes} huecos llenados con admin)`
+  );
 }
 
 // ═══════════════════════════════════════════════════════
@@ -251,9 +282,23 @@ function reproducirAnuncio(anuncio) {
     reproducirImagen(anuncio);
   }
 
-  // Registrar aparición de básico (sin await para no bloquear UI)
-  if (!anuncio.prioridad_garantizada) {
+  // Registrar reproducción en el contador del anuncio (fire-and-forget)
+  registrarReproduccionAnuncio(anuncio);
+
+  // Registrar aparición de básico para control de cuota (sin await)
+  if (!anuncio.prioridad_garantizada && !anuncio.es_admin && anuncio.contratacion_id) {
     registrarAparicionBasico(anuncio.contratacion_id);
+  }
+}
+
+async function registrarReproduccionAnuncio(anuncio) {
+  try {
+    await supabase.rpc('registrar_reproduccion', {
+      p_anuncio_id: anuncio.id,
+      p_es_admin:   anuncio.es_admin || false,
+    });
+  } catch (err) {
+    console.warn('[TV] Error registrando reproducción:', err);
   }
 }
 

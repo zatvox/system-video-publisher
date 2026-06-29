@@ -7,7 +7,7 @@
 import { requireAuth } from './auth.js';
 import { initPanel } from './main.js';
 import {
-  misAnuncios, crearAnuncio, activarAnuncio, eliminarAnuncio,
+  misAnuncios, crearAnuncio, activarAnuncio, desactivarAnuncio, eliminarAnuncio,
   subirAnuncio, contratacionActivaActual
 } from './supabase-data.js';
 import {
@@ -140,11 +140,19 @@ function renderAnuncios() {
 
   if (empty) empty.style.display = 'none';
 
+  // Contar activos por contratación (para mostrar indicador y validar botones)
+  const activosPorContratacion = {};
+  for (const a of anuncios) {
+    if (!activosPorContratacion[a.contratacion_id]) activosPorContratacion[a.contratacion_id] = 0;
+    if (a.es_activo) activosPorContratacion[a.contratacion_id]++;
+  }
+
   grid.innerHTML = anuncios.map(a => {
     const cont = a.contrataciones;
     const planNombre = cont?.planes?.nombre || '—';
-    const esActivo = a.es_activo && cont?.estado === 'activo';
-    const esMensual = cont?.planes?.tipo === 'mensual';
+    const esActivo   = a.es_activo && cont?.estado === 'activo';
+    const esMensual  = cont?.planes?.tipo === 'mensual';
+    const numActivos = activosPorContratacion[a.contratacion_id] || 0;
 
     const preview = a.tipo === 'video'
       ? `<video src="${escapeHtml(a.archivo_url)}" muted playsinline preload="metadata"
@@ -152,23 +160,42 @@ function renderAnuncios() {
            onmouseenter="this.play()" onmouseleave="this.pause()"></video>`
       : `<img src="${escapeHtml(a.archivo_url)}" alt="Anuncio" style="width:100%;height:100%;object-fit:cover">`;
 
+    // Botones para plan mensual: toggle activar/desactivar con validaciones
+    let botonesAccion = '';
+    if (esMensual) {
+      if (esActivo) {
+        // Puede desactivar solo si hay otro activo (mín 1)
+        botonesAccion = `
+          <button class="btn btn-sm btn-warning btn-desactivar" data-id="${a.id}" data-contratacion="${a.contratacion_id}">
+            ⏸ Desactivar
+          </button>`;
+      } else {
+        // Puede activar solo si hay menos de 2 activos
+        botonesAccion = `
+          <button class="btn btn-sm btn-success btn-activar" data-id="${a.id}" data-contratacion="${a.contratacion_id}"
+            ${numActivos >= 2 ? 'disabled title="Ya tienes 2 anuncios activos"' : ''}>
+            ▶ Activar
+          </button>`;
+      }
+    }
+
     return `
       <div class="anuncio-card" data-id="${a.id}">
         <div class="anuncio-preview">
           ${preview}
           <span class="anuncio-type-badge">${a.tipo === 'video' ? '🎬 Video' : '🖼️ Imagen'}</span>
-          ${esActivo ? '<span class="anuncio-active-badge">En aire</span>' : ''}
+          ${esActivo ? '<span class="anuncio-active-badge">● En aire</span>' : '<span class="anuncio-inactive-badge">Inactivo</span>'}
         </div>
         <div class="anuncio-info">
           <div class="anuncio-meta">
             Plan ${escapeHtml(planNombre)} • Subido ${tiempoRelativo(a.created_at)}
           </div>
+          ${esMensual ? `
+            <div class="anuncio-reproducciones">
+              📊 ${(a.reproducciones || 0).toLocaleString()} reproducciones
+            </div>` : ''}
           <div class="anuncio-actions">
-            ${esMensual && !esActivo ? `
-              <button class="btn btn-sm btn-success btn-activar" data-id="${a.id}" data-contratacion="${a.contratacion_id}">
-                ▶ Activar
-              </button>
-            ` : ''}
+            ${botonesAccion}
             <button class="btn btn-sm btn-ghost btn-preview" data-url="${escapeHtml(a.archivo_url)}" data-tipo="${a.tipo}">
               👁 Ver
             </button>
@@ -197,13 +224,15 @@ function bindEventos() {
   const grid = document.getElementById('anuncios-grid');
   if (grid) {
     grid.addEventListener('click', async (e) => {
-      const btnActivar = e.target.closest('.btn-activar');
-      const btnPreview = e.target.closest('.btn-preview');
-      const btnEliminar = e.target.closest('.btn-eliminar');
+      const btnActivar    = e.target.closest('.btn-activar');
+      const btnDesactivar = e.target.closest('.btn-desactivar');
+      const btnPreview    = e.target.closest('.btn-preview');
+      const btnEliminar   = e.target.closest('.btn-eliminar');
 
-      if (btnActivar) await handleActivar(btnActivar);
-      if (btnPreview) abrirPreview(btnPreview.dataset.url, btnPreview.dataset.tipo);
-      if (btnEliminar) await handleEliminar(btnEliminar);
+      if (btnActivar)    await handleActivar(btnActivar);
+      if (btnDesactivar) await handleDesactivar(btnDesactivar);
+      if (btnPreview)    abrirPreview(btnPreview.dataset.url, btnPreview.dataset.tipo);
+      if (btnEliminar)   await handleEliminar(btnEliminar);
     });
   }
 
@@ -240,30 +269,59 @@ function bindEventos() {
 }
 
 // ═══════════════════════════════════════════════════════
-// ACTIVAR ANUNCIO (Plan Mensual)
+// ACTIVAR / DESACTIVAR ANUNCIO (Plan Mensual)
+// Mínimo 1 activo, máximo 2 activos rotan en 1 slot
 // ═══════════════════════════════════════════════════════
 
 async function handleActivar(btn) {
-  const id = btn.dataset.id;
+  if (btn.disabled) return;
+  const id             = btn.dataset.id;
   const contratacionId = btn.dataset.contratacion;
 
   const ok = await confirmar({
-    titulo: 'Cambiar anuncio activo',
-    mensaje: 'Este anuncio reemplazará al anuncio activo actual desde la siguiente vuelta del carrusel.',
+    titulo: 'Activar anuncio',
+    mensaje: 'El anuncio entrará al carrusel en la próxima vuelta. Si ya tienes otro activo, ambos rotarán en tu slot.',
     textoConfirmar: 'Activar',
     tipoBtnConfirmar: 'primary'
   });
-
   if (!ok) return;
 
   showLoading('Activando anuncio...');
   const { error } = await activarAnuncio(id, contratacionId);
   hideLoading();
 
-  if (error) {
+  if (error?.code === 'MAX_ACTIVOS') {
+    toast.error('Ya tienes 2 anuncios activos. Desactiva uno primero.');
+  } else if (error) {
     toast.error('No se pudo activar el anuncio');
   } else {
-    toast.success('Anuncio activado. Aparecerá en la próxima vuelta del carrusel.');
+    toast.success('✅ Anuncio activado. Aparecerá en la próxima vuelta del carrusel.');
+    await cargarAnuncios();
+  }
+}
+
+async function handleDesactivar(btn) {
+  const id             = btn.dataset.id;
+  const contratacionId = btn.dataset.contratacion;
+
+  const ok = await confirmar({
+    titulo: 'Desactivar anuncio',
+    mensaje: 'El anuncio dejará de aparecer en el carrusel. Debes tener al menos 1 anuncio activo.',
+    textoConfirmar: 'Desactivar',
+    tipoBtnConfirmar: 'warning'
+  });
+  if (!ok) return;
+
+  showLoading('Desactivando anuncio...');
+  const { error } = await desactivarAnuncio(id, contratacionId);
+  hideLoading();
+
+  if (error?.code === 'MIN_ACTIVOS') {
+    toast.error('Debes tener al menos 1 anuncio activo en tu plan.');
+  } else if (error) {
+    toast.error('No se pudo desactivar el anuncio');
+  } else {
+    toast.success('Anuncio desactivado. Ya no aparecerá en el carrusel.');
     await cargarAnuncios();
   }
 }
@@ -399,8 +457,8 @@ function mostrarArchivoListo(file, _trimInfo) {
 
 // ═══════════════════════════════════════════════════════
 // EDITOR DE RECORTE DE VIDEO — estilo online-video-cutter
-// Usa @ffmpeg/ffmpeg v0.12 + @ffmpeg/core v0.12.6 (single-thread)
-// No requiere SharedArrayBuffer ni headers COOP/COEP
+// FFmpeg UMD local (assets/js/ffmpeg/) → Worker same-origin, sin SecurityError
+// Core/WASM desde CDN (cargados dentro del Worker, CORS ok)
 // ═══════════════════════════════════════════════════════
 
 function fmtTime(sec) {
@@ -756,12 +814,11 @@ async function procesarRecorteConFfmpeg() {
   try {
     setProgreso(5, 'Cargando procesador de video (primera vez puede tardar ~10s)...');
 
-    // ── Cargar @ffmpeg/ffmpeg v0.12 + @ffmpeg/core v0.12.6 (single-thread)
-    // toBlobURL convierte URLs externas a blob: del mismo origen → no necesita SharedArrayBuffer
-    // IMPORTANTE: usar @ffmpeg/core (sin -mt) → no requiere SharedArrayBuffer ni headers COOP/COEP
+    // ── FFmpeg UMD local (ffmpeg.js + 814.ffmpeg.js alojados en assets/js/ffmpeg/)
+    // El Worker se crea con URL same-origin → no hay SecurityError cross-origin.
+    // ffmpeg-core.js/.wasm se cargan desde CDN *dentro* del Worker (CORS ok).
     if (!ffmpegLoaded) {
-      const { FFmpeg }          = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
-      const { toBlobURL, fetchFile: ff } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+      const { FFmpeg } = window.FFmpegWASM;
 
       ffmpegInstance = new FFmpeg();
 
@@ -769,25 +826,20 @@ async function procesarRecorteConFfmpeg() {
         setProgreso(20 + Math.round(progress * 70), `Recortando... ${Math.round(progress * 100)}%`);
       });
 
-      // Single-thread core → funciona en GitHub Pages sin headers especiales
-      const base = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
       setProgreso(10, 'Descargando núcleo de ffmpeg...');
       await ffmpegInstance.load({
-        coreURL: await toBlobURL(`${base}/ffmpeg-core.js`,   'text/javascript'),
-        wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
+        coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+        wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
       });
 
-      // Guardamos fetchFile en el scope de la instancia para reutilizar
-      ffmpegInstance._fetchFile = ff;
       ffmpegLoaded = true;
     }
 
     setProgreso(20, 'Leyendo archivo de video...');
 
-    const fetchFile = ffmpegInstance._fetchFile;
     const DUR = CONFIG.TV.DURACION_ANUNCIO_SEG;
 
-    await ffmpegInstance.writeFile('input.mp4', await fetchFile(videoFile));
+    await ffmpegInstance.writeFile('input.mp4', new Uint8Array(await videoFile.arrayBuffer()));
 
     setProgreso(25, 'Recortando...');
 

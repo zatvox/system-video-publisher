@@ -567,11 +567,13 @@
 
 </div><!-- /.main -->
 
+<!-- FFmpeg UMD local: Worker same-origin → sin SecurityError en Live Server y GitHub Pages -->
+<script src="../../assets/js/ffmpeg/ffmpeg.js"></script>
 <script type="module">
 // ================================================================
 // VIDEO EDITOR — ZV Publicidad Digital
 // Editor de recorte al estilo online-video-cutter.com
-// FFmpeg single-thread (@ffmpeg/core) — funciona en GitHub Pages
+// FFmpeg UMD local (worker same-origin) + core desde CDN
 // ================================================================
 
 const DUR_SEG = 10; // duración fija del segmento en segundos
@@ -584,7 +586,6 @@ let trimStart     = 0;
 let previewTimer  = null;
 let ffmpegLoaded  = false;
 let ffmpegInst    = null;
-let fetchFileFn   = null;
 let resultBlob    = null;
 
 // ── DOM refs ──────────────────────────────────────────────────
@@ -827,21 +828,19 @@ uploadZone.addEventListener('drop', e => {
 async function cargarFFmpeg(onProgress) {
   if (ffmpegLoaded) return;
 
-  // @ffmpeg/ffmpeg + @ffmpeg/util via jsdelivr
-  const { FFmpeg }     = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
-  const { toBlobURL, fetchFile } = await import('https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js');
+  // UMD cargado via <script> → window.FFmpegWASM disponible
+  // Worker se crea con URL same-origin (base de ffmpeg.js) → no hay SecurityError
+  const { FFmpeg } = window.FFmpegWASM;
 
   ffmpegInst = new FFmpeg();
   ffmpegInst.on('progress', ({ progress }) => onProgress && onProgress(progress));
 
-  // Single-thread core (no requiere SharedArrayBuffer ni GitHub Pages headers)
-  const base = 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd';
+  // ffmpeg-core.js/.wasm se carga desde CDN *dentro* del Worker (CORS ok)
   await ffmpegInst.load({
-    coreURL: await toBlobURL(`${base}/ffmpeg-core.js`,   'text/javascript'),
-    wasmURL: await toBlobURL(`${base}/ffmpeg-core.wasm`, 'application/wasm'),
+    coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
+    wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
   });
 
-  fetchFileFn  = fetchFile;
   ffmpegLoaded = true;
 }
 
@@ -870,7 +869,7 @@ btnConfirm.addEventListener('click', async () => {
     });
 
     setP(18, 'Leyendo archivo de video...');
-    await ffmpegInst.writeFile('input.mp4', await fetchFileFn(videoFile));
+    await ffmpegInst.writeFile('input.mp4', new Uint8Array(await videoFile.arrayBuffer()));
 
     setP(22, 'Aplicando recorte...');
 

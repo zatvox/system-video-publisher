@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Anuncios – ZV Publicidad Digital (Admin)</title>
+  <link rel="icon" href="../../favicon.ico">
+  <link rel="stylesheet" href="../../assets/css/variables.css">
+  <link rel="stylesheet" href="../../assets/css/styles.css">
+  <link rel="stylesheet" href="../../assets/css/components.css">
+  <link rel="stylesheet" href="../../assets/css/responsive.css">
+</head>
+<body>
+  <div id="toast-container"></div>
+
+  <div class="app-layout">
+    <aside class="app-sidebar" id="sidebar">
+      <a href="../../index.html" class="sidebar-logo">
+        <img src="../../assets/images/logo.png" alt="" onerror="this.style.display='none'">
+        <div class="sidebar-logo-text">
+          <span class="sidebar-logo-name">ZV Publicidad</span>
+          <span class="sidebar-logo-tagline">Administración</span>
+        </div>
+      </a>
+
+      <nav class="sidebar-nav">
+        <span class="sidebar-section-label">Principal</span>
+        <a href="dashboard.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Dashboard
+        </a>
+        <a href="validaciones.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Validaciones
+          <span class="nav-badge" data-badge="validaciones" style="display:none">0</span>
+        </a>
+        <a href="anuncios-propios.html" class="sidebar-nav-item active" aria-current="page">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Mis Anuncios
+        </a>
+
+        <span class="sidebar-section-label">Gestión</span>
+        <a href="clientes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          Clientes
+        </a>
+        <a href="planes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          Planes y precios
+        </a>
+        <a href="pantallas.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Pantallas TV
+        </a>
+        <a href="reportes.html" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+          Reportes
+        </a>
+
+        <span class="sidebar-section-label">Links</span>
+        <a href="../../tv.html" target="_blank" class="sidebar-nav-item">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Ver carrusel TV
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-avatar" id="sidebar-avatar">A</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name" id="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Administrador</div>
+          </div>
+        </div>
+        <a href="#" data-action="logout" class="sidebar-nav-item" style="margin-top:4px;color:var(--color-gray-400)">
+          <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          Cerrar sesión
+        </a>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <button class="btn-sidebar-toggle" aria-label="Abrir menú">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+        <div class="header-breadcrumb">
+          <h1>Mis Anuncios</h1>
+          <div class="breadcrumb-path">Administración › Mis Anuncios</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary btn-sm" id="btn-subir-admin">📤 Subir anuncio</button>
+        </div>
+      </header>
+
+      <main class="app-content">
+
+        <div class="alert alert-info" style="margin-bottom:var(--space-6)">
+          <span class="alert-icon">ℹ️</span>
+          <span>
+            Estos anuncios se reproducen <strong>en los slots libres del carrusel</strong>
+            (cuando hay menos de 6 contratos activos). Si los 6 slots están ocupados por clientes,
+            tus anuncios no se reproducen hasta que quede un slot libre.
+          </span>
+        </div>
+
+        <div class="anuncios-grid" id="admin-anuncios-grid"></div>
+
+        <div class="empty-state" id="admin-anuncios-empty" style="display:none">
+          <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <h3>Sin anuncios propios</h3>
+          <p>Sube tus anuncios de negocio para que aparezcan en los slots libres del carrusel.</p>
+          <button class="btn btn-primary" id="btn-subir-admin-empty">📤 Subir mi primer anuncio</button>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ── MODAL SUBIR ANUNCIO ── -->
+  <div id="modal-admin-subir" class="modal-backdrop" style="display:none">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3>Subir anuncio propio</h3>
+        <button class="modal-close" data-close-modal aria-label="Cerrar">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info" style="margin-bottom:var(--space-4)">
+          <span class="alert-icon">ℹ️</span>
+          <span>Formatos: <strong>MP4</strong> (máx. 15MB) o <strong>JPG/PNG</strong> (máx. 5MB). Resolución recomendada: 1920×1080.</span>
+        </div>
+
+        <div style="margin-bottom:var(--space-4)">
+          <label class="form-label" for="input-nombre-admin">Nombre del anuncio <span style="color:red">*</span></label>
+          <input type="text" id="input-nombre-admin" class="form-input"
+            placeholder="Ej: Promo Julio — Negocio XYZ" maxlength="120">
+        </div>
+
+        <div class="file-upload-zone" id="upload-zone-admin">
+          <input type="file" id="file-input-admin" accept="video/mp4,image/jpeg,image/jpg,image/png,image/webp" style="display:none">
+          <div class="file-upload-icon">📁</div>
+          <p class="file-upload-text">Arrastra tu archivo aquí o <strong>haz click para seleccionar</strong></p>
+          <p class="file-upload-hint">Video MP4 (máx. 15MB) o Imagen JPG/PNG (máx. 5MB)</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" data-close-modal>Cancelar</button>
+        <button class="btn btn-primary" id="btn-confirmar-admin" disabled>
+          📤 Subir anuncio
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Conectar botón empty con el del header
+    document.getElementById('btn-subir-admin-empty')
+      ?.addEventListener('click', () => document.getElementById('btn-subir-admin').click());
+  </script>
+  <script type="module" src="../../assets/js/admin-anuncios-propios.js"></script>
+</body>
+</html>

@@ -199,6 +199,14 @@ Las credenciales están en Supabase → **Settings → API**:
 → El TV debe soportar H.264 (MP4). Probar con un video de menor resolución.
 → Verificar que el navegador del TV no bloquea contenido mixto (HTTP/HTTPS)
 
+**"Error SecurityError: Failed to construct 'Worker'" al recortar video"**
+→ Este error ocurre si el Worker de FFmpeg se crea desde una URL de CDN externo (cross-origin).
+→ El proyecto ya está configurado correctamente: `assets/js/ffmpeg/ffmpeg.js` y `814.ffmpeg.js` están alojados localmente, así el Worker se crea desde el mismo origen. Si este error reaparece, verificar que ambos archivos estén en `assets/js/ffmpeg/` y que `mis-anuncios.html` / `video-editor.html` tengan el `<script src="../../assets/js/ffmpeg/ffmpeg.js">` antes del módulo principal.
+
+**"El recorte de video se queda cargando sin avanzar"**
+→ La primera vez carga `ffmpeg-core.js` + `ffmpeg-core.wasm` (~12MB) desde CDN (unpkg.com). Puede tardar 10-30 segundos según la conexión. Las siguientes veces el navegador lo cachea.
+→ Si el problema persiste, verificar conectividad a `unpkg.com`.
+
 **"El TV muestra contenido diferente al otro TV"**
 → Verificar que los relojes del sistema de ambos dispositivos están sincronizados (NTP)
 

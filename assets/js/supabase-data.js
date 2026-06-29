@@ -393,19 +393,52 @@ export async function crearAnuncio(datos) {
 }
 
 /**
- * Activa un anuncio específico y desactiva los demás de la misma contratación.
- * (Usado en plan Mensual para cambiar el anuncio activo)
+ * Activa un anuncio del plan mensual (toggle: true).
+ * Valida que no se superen 2 activos simultáneos en la misma contratación.
+ * @returns {{ data, error }} — error.code='MAX_ACTIVOS' si ya hay 2 activos
  */
 export async function activarAnuncio(anuncioId, contratacionId) {
-  // Primero desactivar todos de la contratación
-  await supabase.from('anuncios')
-    .update({ es_activo: false })
-    .eq('contratacion_id', contratacionId);
+  // Contar cuántos están activos en esta contratación (sin contar el actual)
+  const { data: activos } = await supabase
+    .from('anuncios')
+    .select('id')
+    .eq('contratacion_id', contratacionId)
+    .eq('es_activo', true)
+    .neq('id', anuncioId);
 
-  // Luego activar el seleccionado
+  if (activos && activos.length >= 2) {
+    return { data: null, error: { code: 'MAX_ACTIVOS', message: 'Ya tienes 2 anuncios activos. Desactiva uno antes de activar otro.' } };
+  }
+
   return handleQuery(
     supabase.from('anuncios')
       .update({ es_activo: true, updated_at: new Date().toISOString() })
+      .eq('id', anuncioId)
+      .select().single()
+  );
+}
+
+/**
+ * Desactiva un anuncio del plan mensual (toggle: false).
+ * Valida que quede al menos 1 activo en la contratación.
+ * @returns {{ data, error }} — error.code='MIN_ACTIVOS' si es el último activo
+ */
+export async function desactivarAnuncio(anuncioId, contratacionId) {
+  // Contar cuántos están activos en esta contratación (sin contar el actual)
+  const { data: otrosActivos } = await supabase
+    .from('anuncios')
+    .select('id')
+    .eq('contratacion_id', contratacionId)
+    .eq('es_activo', true)
+    .neq('id', anuncioId);
+
+  if (!otrosActivos || otrosActivos.length === 0) {
+    return { data: null, error: { code: 'MIN_ACTIVOS', message: 'Debes tener al menos 1 anuncio activo en tu plan.' } };
+  }
+
+  return handleQuery(
+    supabase.from('anuncios')
+      .update({ es_activo: false, updated_at: new Date().toISOString() })
       .eq('id', anuncioId)
       .select().single()
   );
@@ -436,6 +469,87 @@ export async function obtenerCarruselActual() {
   return handleQuery(
     supabase.from('vista_carrusel_actual').select('*')
   );
+}
+
+// ═══════════════════════════════════════════════════════
+// ANUNCIOS PROPIOS DEL ADMIN
+// ═══════════════════════════════════════════════════════
+
+/**
+ * Lista todos los anuncios propios del admin.
+ */
+export async function listarAnunciosAdmin() {
+  return handleQuery(
+    supabase.from('anuncios_admin')
+      .select('*')
+      .order('created_at', { ascending: false })
+  );
+}
+
+/**
+ * Crea un anuncio propio del admin.
+ * @param {{ nombre, tipo, archivo_url, nombre_archivo }} datos
+ */
+export async function crearAnuncioAdmin(datos) {
+  return handleQuery(
+    supabase.from('anuncios_admin').insert(datos).select().single()
+  );
+}
+
+/**
+ * Activa o desactiva un anuncio del admin.
+ * @param {string} id
+ * @param {boolean} esActivo
+ */
+export async function toggleAnuncioAdmin(id, esActivo) {
+  return handleQuery(
+    supabase.from('anuncios_admin')
+      .update({ es_activo: esActivo, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select().single()
+  );
+}
+
+/**
+ * Elimina un anuncio del admin y su archivo en Storage.
+ * @param {string} id
+ * @param {string} archivoUrl
+ */
+export async function eliminarAnuncioAdmin(id, archivoUrl) {
+  if (archivoUrl) {
+    try {
+      const urlObj = new URL(archivoUrl);
+      const pathParts = urlObj.pathname.split('/storage/v1/object/public/anuncios/');
+      if (pathParts[1]) {
+        await supabase.storage.from(CONFIG.STORAGE.BUCKET_ANUNCIOS).remove([pathParts[1]]);
+      }
+    } catch (_) { /* ignorar errores de Storage */ }
+  }
+  return handleQuery(
+    supabase.from('anuncios_admin').delete().eq('id', id)
+  );
+}
+
+// ═══════════════════════════════════════════════════════
+// CONTADOR DE REPRODUCCIONES
+// ═══════════════════════════════════════════════════════
+
+/**
+ * Registra una reproducción incrementando el contador del anuncio.
+ * Llamado por tv-player.js al mostrar cada slide (fire-and-forget).
+ * @param {string} anuncioId
+ * @param {boolean} esAdmin — true para anuncios_admin, false para anuncios de clientes
+ */
+export async function registrarReproduccion(anuncioId, esAdmin = false) {
+  try {
+    await supabase.rpc('registrar_reproduccion', {
+      p_anuncio_id: anuncioId,
+      p_es_admin: esAdmin,
+    });
+  } catch (err) {
+    // Fire-and-forget: no interrumpir el reproductor si falla
+    console.warn('[TV] Error registrando reproducción:', err);
+  }
 }
 
 // ═══════════════════════════════════════════════════════
