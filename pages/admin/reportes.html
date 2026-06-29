@@ -305,34 +305,77 @@
     // Ocupación de slots ahora
     async function cargarOcupacion() {
       const { data: carrusel } = await supabase.from('vista_carrusel_actual').select('*');
-      const el = document.getElementById('ocupacion-ahora');
+      const el    = document.getElementById('ocupacion-ahora');
       const total = 6;
-      const ocupados = (carrusel || []).length;
+      const min   = Math.floor(Date.now() / 1000 / 60);
 
+      // ── Separar admin ads de ads de clientes ─────────────────
+      const clientAds = (carrusel || []).filter(a => !a.es_admin);
+      const adminAds  = (carrusel || []).filter(a =>  a.es_admin);
+
+      // ── 1 slot por contratacion_id (plan mensual con 2 ads = 1 slot) ──
+      const byContratacion = {};
+      for (const ad of clientAds) {
+        if (!byContratacion[ad.contratacion_id]) byContratacion[ad.contratacion_id] = [];
+        byContratacion[ad.contratacion_id].push(ad);
+      }
+      // Ad actual del slot (rotación por minuto)
+      const slotsCliente = Object.entries(byContratacion).map(([cid, ads]) => ({
+        ad: ads[min % ads.length], totalAds: ads.length, esAdmin: false,
+      }));
+
+      const ocupadosCliente = slotsCliente.length;
+      const libres          = total - ocupadosCliente;
+
+      // Admin ads en los slots libres (igual lógica que tv-player)
+      const slotsAdmin = adminAds.slice(0, libres).map((ad, i) => ({
+        ad: adminAds[(min + i) % adminAds.length], totalAds: 1, esAdmin: true,
+      }));
+
+      const todosSlots = [...slotsCliente, ...slotsAdmin];
+
+      // ── Visual de slots ────────────────────────────────────────
       const slotsHtml = Array.from({ length: total }).map((_, i) => {
-        const anuncio = (carrusel || [])[i];
-        return `
-          <div class="slot-block ${anuncio ? (i >= total ? 'slot-sobreventa' : 'slot-ocupado') : 'slot-libre'}"
-               title="${anuncio ? anuncio.plan_nombre : 'Libre'}">
-            ${anuncio ? '●' : '○'}
-          </div>
-        `;
+        const slot = todosSlots[i];
+        if (!slot) return `<div class="slot-block slot-libre" title="Libre">○</div>`;
+        const clase = slot.esAdmin ? 'slot-block' : (ocupadosCliente > total ? 'slot-block slot-sobreventa' : 'slot-block slot-ocupado');
+        const style = slot.esAdmin ? 'background:#fef3c7;border-color:#f59e0b;color:#92400e' : '';
+        const label = slot.esAdmin ? 'Propio' : slot.ad.plan_nombre;
+        const multi = (!slot.esAdmin && slot.totalAds > 1) ? ` (${slot.totalAds} ads)` : '';
+        return `<div class="${clase}" style="${style}" title="${label}${multi}">●</div>`;
       }).join('');
 
-      const detalle = (carrusel || []).map(a => `
+      // ── Detalle de slots ───────────────────────────────────────
+      const detalleCliente = slotsCliente.map(s => `
         <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:1px solid var(--border-color);font-size:var(--text-sm)">
-          <span>${a.tipo === 'video' ? '🎬' : '🖼️'}</span>
-          <span style="flex:1">${escapeHtml(a.plan_nombre)}</span>
-          <span class="badge ${a.prioridad_garantizada ? 'badge-success' : 'badge-gray'}" style="font-size:10px">
-            ${a.prioridad_garantizada ? 'Prioritario' : 'Básico'}
+          <span>${s.ad.tipo === 'video' ? '🎬' : '🖼️'}</span>
+          <span style="flex:1">
+            ${escapeHtml(s.ad.plan_nombre)}
+            ${s.totalAds > 1 ? `<span style="font-size:10px;color:var(--text-muted);margin-left:4px">(${s.totalAds} anuncios rotativos)</span>` : ''}
+          </span>
+          <span class="badge ${s.ad.prioridad_garantizada ? 'badge-success' : 'badge-gray'}" style="font-size:10px">
+            ${s.ad.prioridad_garantizada ? 'Prioritario' : 'Básico'}
           </span>
         </div>
-      `).join('') || '<p style="color:var(--text-muted);font-size:var(--text-sm)">Sin anuncios activos.</p>';
+      `).join('');
+
+      const detalleAdmin = slotsAdmin.length > 0 ? `
+        <div style="display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) 0;border-bottom:1px solid var(--border-color);font-size:var(--text-sm)">
+          <span>⚡</span>
+          <span style="flex:1;color:var(--text-muted)">
+            Anuncios propios · ${slotsAdmin.length} slot${slotsAdmin.length > 1 ? 's' : ''} libre${slotsAdmin.length > 1 ? 's' : ''}
+          </span>
+          <span class="badge badge-gray" style="font-size:10px;background:#fef3c7;color:#92400e">Propio</span>
+        </div>
+      ` : '';
 
       el.innerHTML = `
         <div class="slots-grid" style="margin-bottom:var(--space-3)">${slotsHtml}</div>
-        <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4)">${ocupados}/${total} slots ocupados</p>
-        <div>${detalle}</div>
+        <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-4)">
+          ${ocupadosCliente}/${total} slots de clientes ocupados
+          ${slotsAdmin.length > 0 ? ` · ${slotsAdmin.length} con anuncios propios` : ''}
+        </p>
+        <div>${detalleCliente || '<p style="color:var(--text-muted);font-size:var(--text-sm)">Sin anuncios de clientes activos.</p>'}${detalleAdmin}</div>
       `;
     }
 

@@ -23,6 +23,7 @@ import { CONFIG } from './config.js';
 
 let videoFile    = null;  // Archivo seleccionado para subir
 let trimmedFile  = null;  // Si aplica recorte
+let perfilAdmin  = null;  // Perfil del admin (UID necesario para Storage RLS)
 
 // ═══════════════════════════════════════════════════════
 // INIT
@@ -32,6 +33,7 @@ let trimmedFile  = null;  // Si aplica recorte
   const perfil = await requireAuth('admin');
   if (!perfil) return;
 
+  perfilAdmin = perfil;
   initPanel(perfil);
   bindEventos();
   await cargarAnuncios();
@@ -309,7 +311,7 @@ async function handleSubir() {
   try {
     // Subir archivo a Storage (carpeta 'admin/' dentro del bucket anuncios)
     showLoading('Subiendo archivo...');
-    const { url: archivoUrl, error: uploadError } = await subirAnuncio(videoFile, 'admin');
+    const { url: archivoUrl, error: uploadError } = await subirAnuncio(videoFile, perfilAdmin.id);
     if (uploadError) throw uploadError;
 
     // Crear registro en anuncios_admin

@@ -9,6 +9,94 @@
   <link rel="stylesheet" href="../../assets/css/styles.css">
   <link rel="stylesheet" href="../../assets/css/components.css">
   <link rel="stylesheet" href="../../assets/css/responsive.css">
+  <style>
+    /* ── Slot Cards ─────────────────────────────────── */
+    #slots-visual {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      align-items: end;
+    }
+    .slot-card { position: relative; cursor: default; user-select: none; }
+    .slot-thumb {
+      aspect-ratio: 16/9;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      background: #1e293b;
+      border: 2px solid transparent;
+      transition: border-color .2s;
+    }
+    .slot-card:hover .slot-thumb { border-color: var(--color-primary-light, #93c5fd); }
+    .slot-thumb img, .slot-thumb video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .slot-vacio .slot-thumb {
+      background: var(--color-success-light, #d1fae5);
+      border: 2px dashed var(--color-success, #10b981);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .slot-empty-icon { font-size: 28px; color: var(--color-success, #10b981); font-weight: 300; }
+    .slot-admin .slot-thumb  { border-color: #f59e0b; }
+    .slot-playing .slot-thumb {
+      border-color: var(--color-primary, #3b82f6);
+      box-shadow: 0 0 0 2px var(--color-primary, #3b82f6), 0 0 12px rgba(59,130,246,.4);
+    }
+    @keyframes pulso { 0%,100%{opacity:1} 50%{opacity:.35} }
+    .slot-playing-ring {
+      position: absolute; inset: 0; border-radius: 6px;
+      border: 3px solid var(--color-primary, #3b82f6);
+      animation: pulso 1.2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .slot-video-overlay {
+      position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,.28); color: #fff; font-size: 20px;
+      pointer-events: none; opacity: 0; transition: opacity .2s;
+    }
+    .slot-card:hover .slot-video-overlay { opacity: 1; }
+    .slot-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 5px; padding: 0 2px; min-height: 20px;
+    }
+    .slot-badge {
+      font-size: 10px; font-weight: 700; padding: 2px 7px;
+      border-radius: 4px; text-transform: uppercase; letter-spacing: .3px;
+    }
+    .badge-mensual { background:#dbeafe;color:#1e40af; }
+    .badge-semanal { background:#e0e7ff;color:#3730a3; }
+    .badge-diario  { background:#fce7f3;color:#9d174d; }
+    .badge-hora    { background:#f3e8ff;color:#6b21a8; }
+    .badge-basico  { background:#f3f4f6;color:#374151; }
+    .badge-admin   { background:#fef3c7;color:#92400e; }
+    .badge-libre   { background:#d1fae5;color:#065f46; }
+    .slot-multi    { font-size:10px; color:var(--text-muted,#9ca3af); }
+    /* Tooltip nubecita */
+    .slot-tooltip {
+      position: absolute;
+      bottom: calc(100% + 10px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,23,42,.93);
+      color: #e2e8f0;
+      backdrop-filter: blur(6px);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12px; line-height: 1.7;
+      white-space: nowrap;
+      pointer-events: none; opacity: 0; transition: opacity .15s;
+      z-index: 200;
+      box-shadow: 0 6px 20px rgba(0,0,0,.35);
+    }
+    .slot-tooltip::after {
+      content: ''; position: absolute;
+      top: 100%; left: 50%; transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: rgba(15,23,42,.93);
+    }
+    .slot-card:hover .slot-tooltip { opacity: 1; }
+    .slot-now-label { color: #4ade80; font-size: 11px; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div id="toast-container"></div>
@@ -198,41 +286,34 @@
     import { supabase } from '../../assets/js/supabase-client.js';
     import { formatearSoles, escapeHtml } from '../../assets/js/utils.js';
 
+    const TOTAL_SLOTS  = 6;
+    const DURACION_SEG = 10;
+
     const perfil = await requireAuth('admin');
     if (!perfil) throw new Error('No auth');
     initPanel(perfil);
 
-    // Cargar métricas
+    // ── KPIs ──────────────────────────────────────────────────
     const { data: res } = await resumenAdminDashboard();
     if (res && res.ok) {
       document.getElementById('kpi-clientes').textContent   = res.clientes_activos;
       document.getElementById('kpi-pendientes').textContent = res.recargas_pendientes;
       document.getElementById('kpi-ingresos').textContent   = formatearSoles(res.ingresos_mes_actual);
 
-      const slots = res.slots_ocupados_ahora;
-      const total = res.slots_totales;
-      document.getElementById('kpi-slots').textContent  = `${slots}/${total}`;
+      const slotsCliente = res.slots_ocupados_ahora;
+      const total        = res.slots_totales;
+      document.getElementById('kpi-slots').textContent     = `${slotsCliente}/${total}`;
       document.getElementById('kpi-slots-sub').textContent = `de ${total} slots disponibles`;
 
-      // Visual de slots
-      const slotsGrid = document.getElementById('slots-visual');
-      slotsGrid.innerHTML = Array.from({ length: total }).map((_, i) => `
-        <div class="slot-block ${i < slots ? (slots > total ? 'slot-sobreventa' : 'slot-ocupado') : 'slot-libre'}">
-          ${i < slots ? '●' : '○'}
-        </div>
-      `).join('');
-
-      const pct = Math.min(100, Math.round((slots / total) * 100));
+      const pct = Math.min(100, Math.round((slotsCliente / total) * 100));
       const progressEl = document.getElementById('slots-progress');
       progressEl.style.width = `${pct}%`;
       progressEl.className = `progress-fill ${pct >= 100 ? 'danger' : pct >= 80 ? 'warning' : ''}`;
-      document.getElementById('slots-label').textContent = `${slots} de ${total} slots ocupados (${pct}%)`;
+      document.getElementById('slots-label').textContent =
+        `${slotsCliente} de ${total} slots de clientes ocupados (${pct}%)`;
 
-      if (slots > total) {
-        document.getElementById('alerta-sobreventa').style.display = 'flex';
-      }
+      if (slotsCliente > total) document.getElementById('alerta-sobreventa').style.display = 'flex';
 
-      // Badge de pendientes
       if (res.recargas_pendientes > 0) {
         document.getElementById('btn-validaciones-pendientes').style.display = 'flex';
         document.getElementById('count-pendientes').textContent = res.recargas_pendientes;
@@ -240,24 +321,167 @@
       }
     }
 
-    // Anuncios en aire
-    const { data: carrusel } = await supabase.from('vista_carrusel_actual').select('*');
-    const anunciosEl = document.getElementById('anuncios-en-aire');
-    if (!carrusel || carrusel.length === 0) {
-      anunciosEl.innerHTML = '<p style="color:var(--text-muted);text-align:center">No hay anuncios activos en este momento.</p>';
-    } else {
-      anunciosEl.innerHTML = carrusel.map(a => `
-        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--border-color)">
-          <span style="font-size:1.5rem">${a.tipo === 'video' ? '🎬' : '🖼️'}</span>
-          <div style="flex:1">
-            <div style="font-size:var(--text-sm);font-weight:600">${escapeHtml(a.plan_nombre)} · ${escapeHtml(a.plan_tipo)}</div>
-            <div style="font-size:var(--text-xs);color:var(--text-muted)">${a.tipo} · ${a.duracion_seg}s</div>
+    // ── Cargar nombres de clientes (1 query, admin tiene acceso total) ──
+    const contratoMap = {};
+    const { data: contratos } = await supabase
+      .from('contrataciones')
+      .select('id, usuarios!contrataciones_cliente_id_fkey(nombre), planes!contrataciones_plan_id_fkey(nombre, tipo)')
+      .eq('estado', 'activo');
+    for (const c of contratos || []) {
+      contratoMap[c.id] = {
+        clienteNombre: c.usuarios?.nombre || 'Cliente',
+        planNombre:    c.planes?.nombre    || '—',
+        planTipo:      c.planes?.tipo      || '—',
+      };
+    }
+
+    // ── Construir slots (misma lógica que tv-player.js) ────────
+    function construirSlots(carrusel) {
+      const min       = Math.floor(Date.now() / 1000 / 60);
+      const clientAds = (carrusel || []).filter(a => !a.es_admin);
+      const adminAds  = (carrusel || []).filter(a =>  a.es_admin);
+
+      // 1 slot por contratacion_id, ad actual = minuto % cantidad
+      const byContratacion = {};
+      for (const ad of clientAds) {
+        if (!byContratacion[ad.contratacion_id]) byContratacion[ad.contratacion_id] = [];
+        byContratacion[ad.contratacion_id].push(ad);
+      }
+      const slotsCliente = Object.entries(byContratacion).map(([cid, ads]) => {
+        const idx = min % ads.length;
+        return {
+          tipo: 'cliente', contratacionId: cid, ads,
+          adActual: ads[idx], adIdx: idx,
+          info: contratoMap[cid] || { clienteNombre: 'Cliente', planNombre: '—', planTipo: '—' },
+        };
+      });
+
+      // Prioritarios primero, luego básicos
+      const prioritarios = slotsCliente.filter(s =>  s.adActual.prioridad_garantizada);
+      const basicos      = slotsCliente.filter(s => !s.adActual.prioridad_garantizada);
+      const resultado    = [...prioritarios, ...basicos.slice(0, TOTAL_SLOTS - prioritarios.length)];
+
+      // Admin en slots libres
+      let ai = 0;
+      while (resultado.length < TOTAL_SLOTS && ai < adminAds.length) {
+        resultado.push({ tipo: 'admin', adActual: adminAds[(min + ai) % adminAds.length] });
+        ai++;
+      }
+
+      // Vacíos
+      while (resultado.length < TOTAL_SLOTS) resultado.push({ tipo: 'vacio' });
+      return resultado;
+    }
+
+    // ── Render de un slot card ─────────────────────────────────
+    function renderSlot(slot, isPlaying) {
+      if (slot.tipo === 'vacio') return `
+        <div class="slot-card slot-vacio">
+          <div class="slot-thumb"><div class="slot-empty-icon">+</div></div>
+          <div class="slot-footer"><span class="slot-badge badge-libre">Libre</span></div>
+          <div class="slot-tooltip">Slot disponible<br>para nuevos clientes</div>
+        </div>`;
+
+      const ad   = slot.adActual;
+      const ring = isPlaying ? '<div class="slot-playing-ring"></div>' : '';
+      const thumb = ad.tipo === 'video'
+        ? `<video src="${escapeHtml(ad.archivo_url)}" muted preload="metadata" class="slot-video-thumb"></video>
+           <div class="slot-video-overlay">▶</div>`
+        : `<img src="${escapeHtml(ad.archivo_url)}" alt="" loading="lazy">`;
+
+      if (slot.tipo === 'admin') return `
+        <div class="slot-card slot-admin ${isPlaying ? 'slot-playing' : ''}">
+          <div class="slot-thumb">${thumb}${ring}</div>
+          <div class="slot-footer"><span class="slot-badge badge-admin">⚡ Propio</span></div>
+          <div class="slot-tooltip">
+            <strong>Anuncio Propio</strong><br>
+            Tu negocio · Slot libre
+            ${isPlaying ? '<br><span class="slot-now-label">▶ Reproduciendo ahora</span>' : ''}
           </div>
-          <span class="badge ${a.prioridad_garantizada ? 'badge-success' : 'badge-gray'}">
-            ${a.prioridad_garantizada ? 'Prioritario' : 'Básico'}
-          </span>
-        </div>
-      `).join('');
+        </div>`;
+
+      // Slot de cliente
+      const { clienteNombre, planNombre, planTipo } = slot.info;
+      const multiLabel = slot.ads.length > 1
+        ? `<span class="slot-multi">${slot.adIdx + 1}/${slot.ads.length}</span>` : '';
+      return `
+        <div class="slot-card slot-cliente ${isPlaying ? 'slot-playing' : ''}">
+          <div class="slot-thumb">${thumb}${ring}</div>
+          <div class="slot-footer">
+            <span class="slot-badge badge-${escapeHtml(planTipo)}">${escapeHtml(planTipo)}</span>
+            ${multiLabel}
+          </div>
+          <div class="slot-tooltip">
+            <strong>${escapeHtml(clienteNombre)}</strong><br>
+            ${escapeHtml(planNombre)}<br>
+            ${slot.ads.length} anuncio${slot.ads.length > 1 ? 's' : ''}
+            ${isPlaying ? '<br><span class="slot-now-label">▶ Reproduciendo ahora</span>' : ''}
+          </div>
+        </div>`;
+    }
+
+    // ── Renderizar widget de slots ─────────────────────────────
+    function renderSlotsWidget(slots) {
+      const grid = document.getElementById('slots-visual');
+      if (!grid) return;
+      // Slot actualmente en pantalla (aproximado por tiempo unix)
+      const seg        = Math.floor(Date.now() / 1000) % (slots.length * DURACION_SEG);
+      const playingIdx = Math.floor(seg / DURACION_SEG);
+      grid.innerHTML   = slots.map((s, i) => renderSlot(s, i === playingIdx)).join('');
+      // Mostrar primer frame de videos
+      grid.querySelectorAll('.slot-video-thumb').forEach(v => {
+        v.addEventListener('loadedmetadata', () => { v.currentTime = 0.5; }, { once: true });
+      });
+    }
+
+    // ── Cargar carrusel y renderizar ───────────────────────────
+    let slotsActuales = [];
+
+    async function cargarSlots() {
+      const { data: carrusel } = await supabase.from('vista_carrusel_actual').select('*');
+      slotsActuales = construirSlots(carrusel);
+      renderSlotsWidget(slotsActuales);
+      renderAnunciosEnAire(slotsActuales);
+    }
+
+    await cargarSlots();
+
+    // Re-render cada 10s (actualiza "reproduciendo ahora" + rotación mensual por minuto)
+    setInterval(() => renderSlotsWidget(slotsActuales), 10_000);
+    // Re-fetch completo cada 60s
+    setInterval(cargarSlots, 60_000);
+
+    // ── Panel "Anuncios en pantalla ahora" ─────────────────────
+    function renderAnunciosEnAire(slots) {
+      const anunciosEl = document.getElementById('anuncios-en-aire');
+      const conContenido = slots.filter(s => s.tipo !== 'vacio');
+      if (conContenido.length === 0) {
+        anunciosEl.innerHTML = '<p style="color:var(--text-muted);text-align:center">No hay anuncios activos.</p>';
+        return;
+      }
+      anunciosEl.innerHTML = conContenido.map(slot => {
+        const ad = slot.adActual;
+        const label = slot.tipo === 'admin'
+          ? 'Anuncio Propio · Tu negocio'
+          : `${escapeHtml(slot.info.clienteNombre)} · ${escapeHtml(slot.info.planNombre)}`;
+        const multi = slot.ads?.length > 1
+          ? ` <span style="color:var(--text-muted)">(${slot.adIdx + 1}/${slot.ads.length})</span>` : '';
+        const badgeClass = slot.tipo === 'admin' ? 'badge-warning'
+          : (ad.prioridad_garantizada ? 'badge-success' : 'badge-gray');
+        const badgeText  = slot.tipo === 'admin' ? 'Propio'
+          : (ad.prioridad_garantizada ? 'Prioritario' : 'Básico');
+        return `
+          <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--border-color)">
+            <span style="font-size:1.4rem">${ad.tipo === 'video' ? '🎬' : '🖼️'}</span>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:var(--text-sm);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                ${label}${multi}
+              </div>
+              <div style="font-size:var(--text-xs);color:var(--text-muted)">${ad.tipo} · ${ad.duracion_seg}s</div>
+            </div>
+            <span class="badge ${badgeClass}">${badgeText}</span>
+          </div>`;
+      }).join('');
     }
   </script>
 </body>
